@@ -1,3 +1,11 @@
+"""Generates data representing orientation of a join as it moves in an outward-facing 
+	cone pattern (like if you're rotating your shoulder).
+Outputs this data as (x, y, z, theta), where (x,y,z) are the axis that the bone is 
+	pointing and theta is how much the bone is twisted about the axis.
+May be changed to have the format (C,XS,YS,ZS) where C=cos(theta) and S=sin(theta),
+	since that's a standard way to represent orientation quaternions.
+"""
+
 import numpy as np
 import sys
 
