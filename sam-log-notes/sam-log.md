@@ -5,3 +5,5 @@
     - The twist on the upper arm should be constant such that the shoulder always faces upward but that is not happening right now.
     - The stack overflow page says we should use the size of the hypoteneuse between the arm vector and the target vector plus the dot product. However, since both vectors are normalized, the hypoteneuse length should be sqrt(2) rather than 1, right?
 - I'm still not decided on whether the data interpreted by the visualizer should be in axis-angle form or standard orientation quaternion form. The best one is whichever requires the fewest calculations per frame (if the computation time there is important compared to other per-frame operations).
+- It's also possible that we're making a figure 8 because the data actually makes a figure 8 instead of a circle. I am going to graph the points to verify that they correctly make a circle.
+    - I've used graph-example-data.py to verify that output.txt traces out a circle in the plane orthogonal to v_out.
