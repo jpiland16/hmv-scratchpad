@@ -1,0 +1,7 @@
+## 5/22/2021
+- I'm having trouble running the React server locally. Viewport.js tries to open an HTML file and parse it as JSON, then produces an exception, and I don't get past the model loading screen. Is there some package I need to  make sure to install? I already ran `npm install` and that allowed me to boot up the server locally in the first place with `npm start`.
+- I've looked at the interpretation of the generated dataset in GenerateData.js and it seems to make a figure-8 pattern instead of a circle like it should. Additionally, it seems to be inaccurate on the very first time step.
+    - The first time step should have the arm angled upward and centered front-to-back, but it seems not to be angled horizontally.
+    - The twist on the upper arm should be constant such that the shoulder always faces upward but that is not happening right now.
+    - The stack overflow page says we should use the size of the hypoteneuse between the arm vector and the target vector plus the dot product. However, since both vectors are normalized, the hypoteneuse length should be sqrt(2) rather than 1, right?
+- I'm still not decided on whether the data interpreted by the visualizer should be in axis-angle form or standard orientation quaternion form. The best one is whichever requires the fewest calculations per frame (if the computation time there is important compared to other per-frame operations).
