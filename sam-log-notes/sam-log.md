@@ -30,3 +30,21 @@
 - I've made kind of a breakthrough in what to make of the quaternions because the website for the opportunity dataset as a [Q&A](http://www.opportunity-project.eu/node/53.html) section which links the manual for the sensors used. The quaternion represents the transformation from global coordinates to local coordinates.
 ![transformation](alignment-info.png)
 - The quaternions are represented as (cos(alpha/2), **n**sin(alpha/2)) where **n** is the axis of rotation. Thus, the identity quaternion (1, 0, 0, 0) means that the front of the sensor (the part that the wire is NOT sticking out of, which faces *down* the arm) is pointed toward local magnetic north. Since the state of a bone is determined by shoulder position and bone orientation, that's enough info to know where to point the bone, IFF we assume a direction for magnetic north.
+
+## 5/24/2021
+- So if we have global data, our problem is that we don't really know which way the person is facing at t=0, we just know the global positions of each sensor.
+- If we have local data, our problem is that we don't know the initial positions of the joints.
+- Now that Jonathan's figured out and fixed the tiny issue that was preventing proper transformation of the arm, I can make a better table of what basis vector corresponds to what global arm heading.
+
+| Vector | Arm direction | Shoulder direction |
+|---|---|---|
+| (1, 0, 0) | forward | in |
+| (0, 1, 0) | up | back|
+| (0, 0, 1) | out | up |
+
+- the great news is that these form an easily understandable basis, and that the transformation quaternions used in GeneratedData.js are the same type of transformation as what is represented by the quaternion in the OPPORTUNITY dataset
+    - so we need to transform from our xyz to opportunity's global xyz then to new orientation. There's also the 'local-to-global' transformation on the three.js side of things.
+- the confusing news is that it seems we have x and z mixed up compared to what I expected.
+    - that's only because of the 90 degree rotation about the y axis that jonathan implemented in order to account for ME using the wrong vectors for FORWARD and OUT when I generated the data.
+    - I can fix it just by switching out the vectors used in generate-example-data.py
+    

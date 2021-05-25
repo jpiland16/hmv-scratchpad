@@ -26,8 +26,8 @@ def generate_points(t_r, t_max, t_step, v_up, v_forward, v_out):
 
 def generate_data(output_filepath, num_columns, column_index):
 	up = np.array([0.0, 1.0, 0.0])
-	forward = np.array([1.0, 0.0, 0.0])
-	out = np.array([0.0, 0.0, 1.0])
+	forward = np.array([0.0, 0.0, 1.0])
+	out = np.array([-1.0, 0.0, 0.0])
 
 	data_vecs = generate_points(1.0, 1.0, 1.0/30, up, forward, out)
 	right_padding = num_columns - column_index - 4
