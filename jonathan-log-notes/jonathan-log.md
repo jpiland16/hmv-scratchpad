@@ -1,3 +1,10 @@
+---
+tags: [hmv-scratchpad]
+title: jonathan-log
+created: '2021-05-24T17:36:41.689Z'
+modified: '2021-05-26T21:23:59.111Z'
+---
+
 Note: all quaternions in these notes will be given in XYZW format.
 
 ## 5/23/2021
@@ -31,5 +38,23 @@ Note: all quaternions in these notes will be given in XYZW format.
     
  This still did not work, as the mannequin's arms were intersecting its body and moving in unusual ways. The test data I used (first 720 lines of S4-ADL4.dat) appear to start with a walking rhythm - but I wasn't able to simulate the walking motion with any sets of quaternions I tried.
 
+## 5/25/2021 
+
+ - Am looking into using some of the information provided int the label columns to help us get going. For example, using the MATLAB scripts to sort through the data quicker, I am going to try to use the following data from S4-ADL4.dat:
+
+ |Start time (s)|Start line #|Locomotion     |
+ |--------------|------------|---------------|
+ | 40.733       | 1223       | Walking       |
+ | 43.300       | 1300       | Standing      |
+ | 44.166       | 1326       | Sitting       |
+ | 46.600       | 1399       | Laying (down) |
+
+ ## 5/26/2021 
+
+  - Update to yesterday's log: I've decided it is going to be easier just to show on the screen which activity is occuring, since that is a part of the dataset.
+
+    - I have plans to eventually develop a method to output this kind of data, such as graphs and text, to the screen.
+
+  - Finished implementing a lab interface and wrote a [guide](https://github.com/jpiland16/hmv-scratchpad/jonathan-lab-guide/lab-guidelines.md) on how to make a lab. 
 
     
