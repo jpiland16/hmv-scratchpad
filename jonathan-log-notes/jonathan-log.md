@@ -2,7 +2,7 @@
 tags: [hmv-scratchpad]
 title: jonathan-log
 created: '2021-05-24T17:36:41.689Z'
-modified: '2021-05-26T21:23:59.111Z'
+modified: '2021-05-26T21:26:27.013Z'
 ---
 
 Note: all quaternions in these notes will be given in XYZW format.
@@ -55,6 +55,6 @@ Note: all quaternions in these notes will be given in XYZW format.
 
     - I have plans to eventually develop a method to output this kind of data, such as graphs and text, to the screen.
 
-  - Finished implementing a lab interface and wrote a [guide](https://github.com/jpiland16/hmv-scratchpad/jonathan-lab-guide/lab-guidelines.md) on how to make a lab. 
+  - Finished implementing a lab interface and wrote a [guide](https://github.com/jpiland16/hmv-scratchpad/blob/master/jonathan-lab-guide/hmv_test%EA%9E%89%20lab%20guidelines.md) on how to make a lab. 
 
     
