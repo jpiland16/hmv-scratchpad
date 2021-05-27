@@ -2,7 +2,7 @@
 tags: [hmv-scratchpad]
 title: 'hmv_test: lab guidelines'
 created: '2021-05-26T20:18:32.697Z'
-modified: '2021-05-26T21:19:40.094Z'
+modified: '2021-05-27T17:40:17.813Z'
 ---
 
 # hmv_test: *lab guidelines*
@@ -89,7 +89,7 @@ This is a React Hook. Any call to `setProgress` will trigger a re-rendering of t
 ### Line 24 
 
 ```js
-if (props.data.length === 0) {
+if (props.data.current.length === 0) {
 ```
 
 This `if` statement should be used for code that should only be run once, when the lab is loaded. The `LabOpener` guarantees that the value of `props.data` will be an empty array when your lab is initialized.
@@ -105,21 +105,34 @@ I'm performing an asynchronous request in this lab, so I needed to make sure tha
 ### Lines 27-31
 
 ```js
-props.setUseGlobalQs(USE_GLOBAL);
-props.setUseRipple(AUTO_RIPPLE);
-props.setRepeat(REPEAT);
-props.setFPS(FPS);
-props.setLastIndex(-1);
+props.useGlobalQs.current = USE_GLOBAL;
+props.useRipple.current = AUTO_RIPPLE;
+props.repeat.current = REPEAT;
+props.FPS.current = FPS;
+props.lastIndex.current = -1;
 ```
 
-The first 4 lines modify settings referenced [above](#lines-13-16): whether to use global quaternions, whether to allow [auto-ripple](https://github.com/jpiland16/hmv_test/#auto-ripple) (Note: auto-ripple has no effect when viewing live data. Not sure why I left this in here. *See [line 212](https://github.com/jpiland16/hmv_test/blob/master/src/components/Viewport.js#L212) of Viewport.js.*) If repeat is enabled, the `timeSlider` value will reset to 0 when it reaches the end, and so your visuals will loop until the pause button is clicked.
+The first 4 lines modify settings referenced [above](#lines-13-16): whether to use global quaternions, whether to allow [auto-ripple](https://github.com/jpiland16/hmv_test/#auto-ripple) (Note: auto-ripple has no effect when viewing live data. Not sure why I left this in here. *See [line 213](https://github.com/jpiland16/hmv_test/blob/master/src/components/Viewport.js#L213) of Viewport.js.*) If repeat is enabled, the `timeSlider` value will reset to 0 when it reaches the end, and so your visuals will loop until the pause button is clicked.
+
+### Lines 33-36
+
+```js
+props.outputTypes.current = [{
+    startCol: 243,
+    columnCount: 1
+}]
+```
+
+I'm working on an interface to make it easy to check the data while it being viewed. Right now, the only things that work are the label columns; however, in the future, we would hopefully be able to use the value columns and create cards with graphs. The syntax is as follows: each element in the array `props.outputTypes.current` corresponds to a card that will appear in the Viewport, depending on your settings.
 
 
-### Lines 33-57
+### Lines 38-64
 
 ```js
 let x = new XMLHttpRequest();
-x.open("GET", "/files/demo/S4-ADL4.dat");
+x.open("GET", window.location.href === "http://localhost:3000/" ? 
+    "https://raw.githubusercontent.com/jpiland16/hmv_test/master/files/demo/S4-ADL4.dat" : 
+    "files/demo/S4-ADL4.dat");
 
 x.onload = () => {
     let inputArray = x.responseText.split("\n");
@@ -129,7 +142,7 @@ x.onload = () => {
         linesArray[i] = inputArray[i].split(" ");
     }
 
-    props.setData(linesArray);
+    props.data.current = linesArray;
     outgoingRequest = false;
 }
 
@@ -147,58 +160,61 @@ outgoingRequest = true;
 
 A basic implementation of an `XMLHttpRequest`.
 
-### Line 62
+### Line 67
 
 ```js
-let boneNames = Object.getOwnPropertyNames(boneList);
+React.useEffect(() => {
 ```
+
+I wrapped the function updating the model in a `useEffect` hook, to tell React to perform this action after rendering the UI.
+
 
 This line should have been in the next `if` statement. Not sure why I left it out there to dry. It's placement doesn't affect much, however.
 
-### Line 64 
+### Line 70
 
 ```js
-if (props.timeSliderValue !== props.lastIndex && props.data.length > 0) {
+if (props.timeSliderValue !== props.lastIndex.current && props.data.current.length > 0) {
 ```
 
-The code inside this `if` statement is executed when the `timeSliderValue` becomes different from the `lastIndex` upon which the model was updated. This is where your code should move the Three.js model. *(Note: I had to add the additional condition of `props.data.length > 0` because of the asynchronous `XMLHttpRequest`. Again, this would not be necessary if using hard-coded data.)*
+The code inside this `if` statement is executed when the `timeSliderValue` becomes different from the `lastIndex` upon which the model was updated. This is where your code should move the Three.js model. *(Note: I had to add the additional condition of `props.data.current.length > 0` because of the asynchronous `XMLHttpRequest`. Again, this would not be necessary if using hard-coded data.)*
 
-### Lines 66-72
+### Lines 73-79
 
 ```js
 let columnStart = boneList[boneNames[i]];
 let q = new THREE.Quaternion(
-    props.data[props.timeSliderValue][columnStart + 1] / 1000, // X
-    props.data[props.timeSliderValue][columnStart + 2] / 1000, // Y
-    props.data[props.timeSliderValue][columnStart + 3] / 1000, // Z
-    props.data[props.timeSliderValue][columnStart + 0] / 1000, // W
+    props.data.current[props.timeSliderValue][columnStart + 1] / 1000, // X
+    props.data.current[props.timeSliderValue][columnStart + 2] / 1000, // Y
+    props.data.current[props.timeSliderValue][columnStart + 3] / 1000, // Z
+    props.data.current[props.timeSliderValue][columnStart + 0] / 1000, // W
 );
 ```
 
 Updating each of the selected bones with the Opportunity quaternions.
 
-### Line 73
+### Line 80
 
 ```js
-props.setLastIndex(props.timeSliderValue);
+props.lastIndex.current = props.timeSliderValue;
 ```
 
 Prevents an infinte loop of re-rendering once the 3-D model has been updated. This line is extremely important! *(Another note: I feel like this line __does__ need to be inside the `for` loop so that re-rendering has no chance of occuring after a `batchUpdate`, even though it is redundant to call this function repeatedly. I haven't actually tried moving it outside of the loop, however.)*
 
-### Line 74
+### Line 81
 
 ```js
 props.batchUpdate(boneNames[i], [q.x, q.y, q.z, q.w]);
 ```
 The first parameter should be a string with the name of the bone (currently supported: `ROOT`, `BACK`, `RUA`, `RLA`, `LUA`, `LLA`, `LSHOE`, and `RSHOE`) while the second parameter should be an array of quaternion values.
 
-### Lines 78-84
+### Lines 86-92
 
 ```JSX
 return (
     <div>
-        <div>{props.data.length > 0 ? "File downloaded successfully." : `File downloading: ${progress}% complete`}</div>
-        { props.data.length === 0 && <LinearProgress variant="determinate" value={progress} /> }
+        <div>{props.data.current.length > 0 ? "File downloaded successfully." : `File downloading: ${progress}% complete`}</div>
+        { props.data.current.length === 0 && <LinearProgress variant="determinate" value={progress} /> }
         <a href="https://github.com/jpiland16/hmv_test/blob/master/src/components/menu/components/main-panel/subpanels/Labs/Jonathan20210526/RequestFile.js" target="_blank" rel="noreferrer">View relevant code</a>
     </div>
 )
