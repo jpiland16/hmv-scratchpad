@@ -2,7 +2,7 @@
 tags: [hmv-scratchpad]
 title: 'hmv_test: lab guidelines'
 created: '2021-05-26T20:18:32.697Z'
-modified: '2021-05-27T17:40:17.813Z'
+modified: '2021-05-27T18:28:31.773Z'
 ---
 
 # hmv_test: *lab guidelines*
@@ -56,7 +56,7 @@ These are the relevant columns for quaternions in the Opportunity dataset.
 
 ```js
 const USE_GLOBAL = true;
-const AUTO_RIPPLE = true;
+
 const REPEAT = false;
 const FPS = 30;
 ```
@@ -106,13 +106,13 @@ I'm performing an asynchronous request in this lab, so I needed to make sure tha
 
 ```js
 props.useGlobalQs.current = USE_GLOBAL;
-props.useRipple.current = AUTO_RIPPLE;
+
 props.repeat.current = REPEAT;
 props.FPS.current = FPS;
 props.lastIndex.current = -1;
 ```
 
-The first 4 lines modify settings referenced [above](#lines-13-16): whether to use global quaternions, whether to allow [auto-ripple](https://github.com/jpiland16/hmv_test/#auto-ripple) (Note: auto-ripple has no effect when viewing live data. Not sure why I left this in here. *See [line 213](https://github.com/jpiland16/hmv_test/blob/master/src/components/Viewport.js#L213) of Viewport.js.*) If repeat is enabled, the `timeSlider` value will reset to 0 when it reaches the end, and so your visuals will loop until the pause button is clicked.
+The first 3 lines modify settings referenced [above](#lines-13-16): whether to use global quaternions, whether to repeat at the end, and frames per second. The last line triggers an immediate refresh of the model once loaded.
 
 ### Lines 33-36
 
