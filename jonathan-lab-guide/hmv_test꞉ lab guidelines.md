@@ -2,7 +2,7 @@
 tags: [hmv-scratchpad]
 title: 'hmv_test: lab guidelines'
 created: '2021-05-26T20:18:32.697Z'
-modified: '2021-05-27T18:28:31.773Z'
+modified: '2021-05-27T18:42:42.671Z'
 ---
 
 # hmv_test: *lab guidelines*
@@ -102,17 +102,15 @@ if(!outgoingRequest) {
 
 I'm performing an asynchronous request in this lab, so I needed to make sure that the request would not repeat if re-renders were triggered during the data retrieval. (For example, re-rendering the progress bar would have caused an infinite loop without this statement, because every re-render would create a new request.) If you're just using a string or some other kind of included data, however, you shouldn't need any extra `if` statements.
 
-### Lines 27-31
+### Lines 29-31
 
 ```js
-props.useGlobalQs.current = USE_GLOBAL;
-
 props.repeat.current = REPEAT;
 props.FPS.current = FPS;
 props.lastIndex.current = -1;
 ```
 
-The first 3 lines modify settings referenced [above](#lines-13-16): whether to use global quaternions, whether to repeat at the end, and frames per second. The last line triggers an immediate refresh of the model once loaded.
+The first 2 lines modify some of the settings referenced [above](#lines-13-16): whether to repeat at the end and frames per second. The last line triggers an immediate refresh of the model once loaded.
 
 ### Lines 33-36
 
@@ -174,12 +172,19 @@ This line should have been in the next `if` statement. Not sure why I left it ou
 ### Line 70
 
 ```js
+props.useGlobalQs.current = USE_GLOBAL;
+```
+Force-enables the `useGlobalQs` setting any time the model will move.
+
+### Line 71
+
+```js
 if (props.timeSliderValue !== props.lastIndex.current && props.data.current.length > 0) {
 ```
 
 The code inside this `if` statement is executed when the `timeSliderValue` becomes different from the `lastIndex` upon which the model was updated. This is where your code should move the Three.js model. *(Note: I had to add the additional condition of `props.data.current.length > 0` because of the asynchronous `XMLHttpRequest`. Again, this would not be necessary if using hard-coded data.)*
 
-### Lines 73-79
+### Lines 74-80
 
 ```js
 let columnStart = boneList[boneNames[i]];
@@ -193,7 +198,7 @@ let q = new THREE.Quaternion(
 
 Updating each of the selected bones with the Opportunity quaternions.
 
-### Line 80
+### Line 81
 
 ```js
 props.lastIndex.current = props.timeSliderValue;
@@ -201,14 +206,14 @@ props.lastIndex.current = props.timeSliderValue;
 
 Prevents an infinte loop of re-rendering once the 3-D model has been updated. This line is extremely important! *(Another note: I feel like this line __does__ need to be inside the `for` loop so that re-rendering has no chance of occuring after a `batchUpdate`, even though it is redundant to call this function repeatedly. I haven't actually tried moving it outside of the loop, however.)*
 
-### Line 81
+### Line 82
 
 ```js
 props.batchUpdate(boneNames[i], [q.x, q.y, q.z, q.w]);
 ```
 The first parameter should be a string with the name of the bone (currently supported: `ROOT`, `BACK`, `RUA`, `RLA`, `LUA`, `LLA`, `LSHOE`, and `RSHOE`) while the second parameter should be an array of quaternion values.
 
-### Lines 86-92
+### Lines 87-93
 
 ```JSX
 return (
