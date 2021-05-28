@@ -2,6 +2,9 @@
 tags: [hmv-scratchpad]
 title: sophie-log
 ---
+## 5/28/2021
+- looking more into MVN software adn requested a free trial
+  - According to the website the free trial comes with preloaded data to work with. I'm thinking if I export that data into Excel I can pull the quaternion values out of it and we can 
 ## 5/27/2021
 - created simple THREE.js scene with stiff model made of cubes in an attempt to get the BACK IMU data displayed correctly
 - oriented the camera so THREE.js coord system matches OPPORTUNITY coord system:
@@ -34,9 +37,9 @@ camera.rotation.z=MATH.PI/2
   - [MVN Sensors](https://www.researchgate.net/profile/Per-Slycke/publication/239920367_Xsens_MVN_Full_6DOF_human_motion_tracking_using_miniature_inertial_sensors/links/0f31752f1f60c20b18000000/Xsens-MVN-Full-6DOF-human-motion-tracking-using-miniature-inertial-sensors.pdf 
 )
     - MVN Sensors Notes
-![page1](page1.PNG)
-![page2](page2.PNG)
-![page3](page3.PNG)
+![page1](\photos\page1.PNG)
+![page2](\photos\page2.PNG)
+![page3](\photos\page3.PNG)
     
 ## Background Research
 - Read through documentation from previous project
