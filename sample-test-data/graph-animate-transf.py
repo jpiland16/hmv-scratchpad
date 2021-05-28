@@ -31,8 +31,8 @@ def vec_quat_mult(vec, quat):
 
 # https://matplotlib.org/stable/gallery/animation/random_walk.html#sphx-glr-gallery-animation-random-walk-py
 def update_sensor(frame_num, heading_data, axes_plot):
-    axes_plot.set_data(heading_data[0:2, :frame_num])
-    axes_plot.set_3d_properties(heading_data[2, :frame_num])
+    axes_plot.set_data(heading_data[0:2, :frame_num+1])
+    axes_plot.set_3d_properties(heading_data[2, :frame_num+1])
     return axes_plot
 
 
