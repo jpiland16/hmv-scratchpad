@@ -5,7 +5,7 @@ title: sophie-log
 ## 5/29/2021
 - I have two ideas that I will be looking into more today. 
   - In yesterdays meeting, we were discussing how to deal with the identity quaternions being different between THREE and OPP worlds. What if we multipy the OPP Quaternion (pre or post I'm not sure yet) by the quaternions that would align the the body segment to the identity quaternion in OPP world thus making those quaternions the temporary idenity quaternions that the real rotations will be applied on top of.
-![diagram](photos/diagram.png)
+![diagram](photos/diagram.PNG)
   - Using [Article on LookAt Function](https://www.euclideanspace.com/maths/algebra/vectors/lookat/index.htm) to fix the bug in the other test I was working on
 ## 5/28/2021
 - looking more into MVN software and requested a free trial (currently waiting on the activation link)
