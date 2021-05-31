@@ -1,9 +1,21 @@
 ## 5/31/2021
 - I recycled the functions from the python animator into a quick tester for quaternion transformations to see what set of transformations will get from sensor space to three.js space.
-    - For quaternion **q = (w,x,y,z) = (1/2, -1/2, -1/2, -1/2)** and vector **v** in OPPORTUNITY space, **qv** is the corresponding vector in THREE space. This is demonstrated quickly by `../sample-test-data/utils/quat-operations.py`.
+    - For quaternion **q = (w,x,y,z) = (1/2, -1/2, -1/2, -1/2)** and vector **v** in OPPORTUNITY space, **qv(q^-1)** is the corresponding vector in THREE space. This agrees with what Jonathan said and is demonstrated quickly by `../sample-test-data/utils/quat-operations.py`.
     - By OPPORTUNITY space, I mean that x points toward the camera, y points to camera right, and z points up. By THREE space, I mean that x points toward camera right, y points up, and z points toward the camera.
     - When I use this transformation in Sophie's lab from today (which is really promising) it does NOT cause the orientations of bones to be **qv**. I haven't tried it yet with one bone at a time. 
     - This probably has to do with the parent-child connection between bone orientations, but I thought that was accounted for because we're using global-to-local translation and the bones are manipulated in topological order (parent before child).
+- I've just pulled Jonathan's log from 5/30/2021 and read it for the first time, and it looks like he has already used a similar quaternion to transform the coordinates and has done a bunch of tests, so I need to catch up with that.
+- He used both pre- and post-multiplication to transform from OPPORUNITY global to THREE, based on the following snippet:
+    ```js
+          /* Transform our coordinate system */
+          q.premultiply(new THREE.Quaternion(0.5, 0.5, 0.5, 0.5));
+          q.multiply(new THREE.Quaternion(0.5, 0.5, 0.5, -0.5));
+        
+          /* Rotate the back to the correct initial position */
+          q.premultiply(new THREE.Quaternion(-0.707, 0, 0, 0.707));
+    ```
+    - I should probably ask about this. Since we're multiplying two quaternions, we can just use the hamiltonian product of (0.5,0.5,0.5,-0.5) and **q** without having to both pre- and post-multiply.
+- Last thought: What we should do is get in a situation where every bone is aligned along the x-axis. Then we know how to transform that into what was measured in the dataset--we just apply two quaternions.
 
 ## 5/30/2021
 - I modified the file to use labelled command line arguments with optional flags.  I can still  produce the same output using `python graph-animate-transf.py data-samples/S1-Drill.dat --o 59 --max 2000 --float`.
