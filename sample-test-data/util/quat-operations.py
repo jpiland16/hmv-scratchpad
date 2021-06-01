@@ -23,7 +23,7 @@ def vec_quat_mult(vec, quat):
 
 if __name__=='__main__':
     sensor_heading_local = np.array([1,0,0])
-    quat_data = np.array([0.6532814824381883, 0.6532814824381883, 0.2705980500730985, 0.2705980500730985])
+    quat_data = np.array([0.6779879364607869, 0.6214175397860577, 0.2008291762011785, 0.3374021950821352])
     sensor_heading_opp = vec_quat_mult(sensor_heading_local, quat_data)
     quat_t_o = np.array([1/2, -1/2, -1/2, -1/2])
     sensor_heading_three = vec_quat_mult(sensor_heading_opp, quat_t_o)

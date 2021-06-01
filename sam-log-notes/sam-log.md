@@ -16,6 +16,13 @@
     ```
     - I should probably ask about this. Since we're multiplying two quaternions, we can just use the hamiltonian product of (0.5,0.5,0.5,-0.5) and **q** without having to both pre- and post-multiply.
 - Last thought: What we should do is get in a situation where every bone is aligned along the x-axis. Then we know how to transform that into what was measured in the dataset--we just apply two quaternions.
+- I just put this to the test in a new 'Sam 5/31' lab using the generated data which makes the bone go in a cone shape pointing toward positive x. As long as I first point the bone along the x-axis, I can then apply the transformation that points the local x-axis where I want it to go. The transformations for LUA are as follows:
+    - Rotate 90 degrees CW (-270 CCW) along the z-axis, to get the arm pointing in the x-axis
+    - Rotate 90 degrees CCW along the x-axis, to get the top of the arm pointing in the y-axis
+    - Apply the quaternion from the dataset
+    - Rotate 120 degrees about (1,1,1), to switch basis between the OPPORTUNITY global space and that of THREE.js.
+- If we can come up with transformations to point the bone in the positive x direction, we can then reliably apply OPPORTUNITY data. This is kind of punting the problem, though, since we still need to know how to point a bone in a direction. Every bone has its own default direction, and I'm not sure where it is written. Jonathan or Sophie might know.
+    - A big challenge here is managing parents and children. We need to make sure that we can control the DIRECTION of a parent bone and child bone independently (but their positions should be tied together based on the orientation of the parent).
 
 ## 5/30/2021
 - I modified the file to use labelled command line arguments with optional flags.  I can still  produce the same output using `python graph-animate-transf.py data-samples/S1-Drill.dat --o 59 --max 2000 --float`.
