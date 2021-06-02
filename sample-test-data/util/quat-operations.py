@@ -21,7 +21,12 @@ def vec_quat_mult(vec, quat):
     final_prod = ham_product(ham_product(quat, vec_extended), quat_inverse)
     return final_prod[1:4]
 
-if __name__=='__main__':
+if __name__=='__main__':    
+    q1 = np.array([0.707, 0, 0, 0.707]) #rotation of 90 degrees CCW about the x-axis
+    q2 = np.array([0, 0, 0.707, 0.707]) #rotation of 90 degrees CCW about the z-axis
+    q3 = np.array([0.707, 0, 0, -0.707]) #rotation of 270 degrees CCW about the x-axis
+    print("Sophie intermediate product: {0}".format(ham_product(q2,q1)))
+    print("Sophie product: {0}".format(ham_product(q3, ham_product(q2, q1))))
     sensor_heading_local = np.array([1,0,0])
     quat_data = np.array([0.6779879364607869, 0.6214175397860577, 0.2008291762011785, 0.3374021950821352])
     sensor_heading_opp = vec_quat_mult(sensor_heading_local, quat_data)

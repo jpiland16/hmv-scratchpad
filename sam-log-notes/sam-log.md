@@ -1,3 +1,26 @@
+## 6/2/2021
+- I'm looking at possible datasets for extending the project. The main source is the UCI machine learning dataset repository, and Karen and Charlotte [already sorted](https://docs.google.com/spreadsheets/d/17MQfr9Dy6LU3BbPSYQeYLCg20x13Vyc8chQxOFLT3xQ/edit#gid=0) the major HAR ones by citation.
+    1. [Human Activity Recognition Using Smartphones Data Set](https://archive.ics.uci.edu/ml/datasets/human+activity+recognition+using+smartphones)
+    - It has no quaternions but it does have lots of accelerometer data and data about the angle between gravity and the Samsung smartphone basis vectors. This is hard to apply to the model because it [just has one sensor](https://www.youtube.com/watch?v=XOEN9W05_4A) which indicates where the torso is facing--no joints. We probably want something with a relationship between limbs and body.
+    2. [WISDM Smartphone and Smartwatch Activity and Biometrics Dataset Data Set](https://archive.ics.uci.edu/ml/datasets/WISDM+Smartphone+and+Smartwatch+Activity+and+Biometrics+Dataset+#)
+    - There are two sensors: one on the dominant wrist (a smart watch) and one on the body (a phone). This means that we have some relationship between limb and body, but things will look very distorted when the arm is bent because we can't tell how the segments of limbs are oriented.
+    3. Kasteren dataset
+    - I haven't fully looked into this one since it's harder to get documentation on what sensors are involved. The download requires me to run a MATLAB script to view it so I may try that later on.
+    - [One MDPI paper](https://www.mdpi.com/1424-8220/20/9/2702/htm) states that Kasteren is just environmental sensors.
+- Since Karen and Charlotte already listed which datasets have a skeleton, I'm going to proceed starting with those ones.
+- It's best to find ones that have quaternions, data on the per-joint level, and also ones that use Xsens sensors would be especially great since we have some experience on how they work.
+    1. Cornell Activity Datasets CAD-60
+    - This one is super promising because it reports orientation of joints all over the body, in rotation matrix form. Sadly the links to it don't seem to be working, so it might have been taken down.
+    2. [CASAS HAR datasets](http://casas.wsu.edu/datasets/)
+    - The first one on the list uses ambient motion sensors instead of sensors on the target's body.
+    - Item 18 on the list has wearable accelerometers on the right hip, dominant wrist, non-dominant upper arm, dominant ankle, and non-dominant thigh.
+    3. [Daily and Sports Activities Data Set](https://archive.ics.uci.edu/ml/datasets/daily+and+sports+activities)
+    - It has one unit each for torso, arm and leg. There is accelerometer data, gyro data and magnetometer data. The documentation is fairly sparse but I will look at papers about it.
+    - [The paper introducing this dataset](http://kilyos.ee.bilkent.edu.tr/~billur/publ_list/cj14.pdf) shows that it also uses Xsens sensors which is very good news. There's also figures showing where they are on the body.
+
+
+- Update on notes from two days ago: Sophie and I agree on all this and she has implemented it (indepenently) with the actual dataset. It turns out you can treat almost all of the bone the same way.
+
 ## 5/31/2021
 - I recycled the functions from the python animator into a quick tester for quaternion transformations to see what set of transformations will get from sensor space to three.js space.
     - For quaternion **q = (w,x,y,z) = (1/2, -1/2, -1/2, -1/2)** and vector **v** in OPPORTUNITY space, **qv(q^-1)** is the corresponding vector in THREE space. This agrees with what Jonathan said and is demonstrated quickly by `../sample-test-data/utils/quat-operations.py`.
@@ -19,10 +42,13 @@
 - I just put this to the test in a new 'Sam 5/31' lab using the generated data which makes the bone go in a cone shape pointing toward positive x. As long as I first point the bone along the x-axis, I can then apply the transformation that points the local x-axis where I want it to go. The transformations for LUA are as follows:
     - Rotate 90 degrees CW (-270 CCW) along the z-axis, to get the arm pointing in the x-axis
     - Rotate 90 degrees CCW along the x-axis, to get the top of the arm pointing in the y-axis
+        - The composite of these is **q**= (w,x,y,z) = (0.5, 0.5, 0.5, -0.5), or a 120-degree rotation CCW about (1, 1, -1).
     - Apply the quaternion from the dataset
-    - Rotate 120 degrees about (1,1,1), to switch basis between the OPPORTUNITY global space and that of THREE.js.
+    - Rotate 120 degrees CCW about (1,1,1), to switch basis between the OPPORTUNITY global space and that of THREE.js.
 - If we can come up with transformations to point the bone in the positive x direction, we can then reliably apply OPPORTUNITY data. This is kind of punting the problem, though, since we still need to know how to point a bone in a direction. Every bone has its own default direction, and I'm not sure where it is written. Jonathan or Sophie might know.
+    - Using the quaternion (0, 0, 0, 1) on every relevant shows that their default directions are all along the positive y axis, so that's convenient. However we at least have to use different quaternions for determining the correct 'up' direction for the arms.
     - A big challenge here is managing parents and children. We need to make sure that we can control the DIRECTION of a parent bone and child bone independently (but their positions should be tied together based on the orientation of the parent).
+        - The strategy here is that for every quaternion applied to the parent, the opposite should be applied to every child. Is this already done by the ripple thing?
 
 ## 5/30/2021
 - I modified the file to use labelled command line arguments with optional flags.  I can still  produce the same output using `python graph-animate-transf.py data-samples/S1-Drill.dat --o 59 --max 2000 --float`.
