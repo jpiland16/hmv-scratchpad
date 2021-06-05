@@ -1,3 +1,18 @@
+## 6/5/2021
+- [This paper](http://vigir.missouri.edu/~gdesouza/Research/Conference_CDs/RehabWeekZ%C3%BCrich/icorr/papers/Madgwick_Estimation%20of%20IMU%20and%20MARG%20orientation%20using%20a%20gradient%20descent%20algorithm_ICORR2011.pdf) has one proposal for integrating gyro data accurately and links to a bunch of other potential methods. Since the gyro data I'm curretnly making is (i) quite exaggerated and (ii) depends on the ordering when I compose the rotations about individual axes together, I'm still looking to new methods.
+    - There's a C++ implementation [here](https://github.com/arduino-libraries/MadgwickAHRS/blob/master/src/MadgwickAHRS.cpp), and it optionally involves magnetometer and accelerometer data also.
+    - It's constrasted from a 'Kalman filter' which I need to look into because it seems to be pretty ubiquitous in sensor fusion.
+
+## 6/4/2021
+- Correction to myself on how coordinates work for OPPORTUNITY: the y-axis represents local sensor LEFT, not local sensor right. I can tell by the diagram on page 10 of the manual.
+
+## 6/3/2021
+- I decided to look at using the gyro data. There are three data points, gyroX, gyroY, and gyroZ, and based on some general reasearch and information from the more recent Xsens manual (not the one linked on the OPPORTUNITY website) it seems that these represent the rotation about the local x, y and z axes.
+- Using this information I created a composition of three quaternions and applied them at each time interval, so that I could estimate the orientation by simulating each recorded angular velocity.
+    - Since this is basically Euler's method for integrating, I probably have an expected error on the order of h^2 where h is the time step, which means things could get out of hand very quickly.
+- I got my current results with the command `python graph-gyro-data.py data-samples/S1-Drill.dat --offset 53 --maxlines 500` using the new Python program. Compare them to the animated results for the same bone (RUA) to see what is the same and what is different.
+    - It seems that the magnitude of the movements is off by a significant margin compared to the quaternions. However, We still see the bouncy movement in an arc around the body, AND there's that odd loop at the top of the path in both versions. Really promising.
+
 ## 6/2/2021
 - I'm looking at possible datasets for extending the project. The main source is the UCI machine learning dataset repository, and Karen and Charlotte [already sorted](https://docs.google.com/spreadsheets/d/17MQfr9Dy6LU3BbPSYQeYLCg20x13Vyc8chQxOFLT3xQ/edit#gid=0) the major HAR ones by citation.
     1. [Human Activity Recognition Using Smartphones Data Set](https://archive.ics.uci.edu/ml/datasets/human+activity+recognition+using+smartphones)
