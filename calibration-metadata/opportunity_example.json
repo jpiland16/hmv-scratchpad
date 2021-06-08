@@ -1,0 +1,36 @@
+{
+    "globalTransform": {
+        "w": 0.5,
+        "x": 0.5,
+        "y": 0.5,
+        "z": -0.5
+    },
+    "fileNames": [{"name": "S1-Drill.dat"}, {"name": "S1-ADL.dat"}],
+    "sensors": [
+        {
+            "bone": "BACK",
+            "column": 46,
+            "type": "Quaternion"
+        },
+        {
+            "bone": "RUA",
+            "column": 59,
+            "type": "Quaternion"
+        },
+        {
+            "bone": "RLA",
+            "column": 72,
+            "type": "Quaternion"
+        },
+        {
+            "bone": "LUA",
+            "column": 82,
+            "type": "Quaternion"
+        },
+        {
+            "bone": "LLA",
+            "column": 98,
+            "type": "Quaternion"
+        }
+    ]
+}
