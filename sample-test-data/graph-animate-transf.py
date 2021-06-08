@@ -67,7 +67,7 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     x_vec = np.array([1,0,0])
-    y_vec = np.array([0,-1,0])
+    y_vec = np.array([0,1,0])
     z_vec = np.array([0,0,1])
 
     # I really need to implement flags for this
@@ -114,7 +114,7 @@ if __name__=='__main__':
     sensor_path = ax.plot(pointervals[0], pointervals[1], pointervals[2], label='Position of sensor')[0]
     up_quiver = ax.quiver(pointervals[0], pointervals[1], pointervals[2], shouldervals[0], shouldervals[1], shouldervals[2], edgecolors="orange", length=0.45, label='Local sensor up (z)')
     fd_quiver = ax.quiver(pointervals[0], pointervals[1], pointervals[2], shouldervals[0], shouldervals[1], shouldervals[2], edgecolors="green", length=0.45, label='Local sensor forward (x)')
-    right_quiver =  ax.quiver(pointervals[0], pointervals[1], pointervals[2], shouldervals[0], shouldervals[1], shouldervals[2], edgecolors="blue", length=0.45, label='Local sensor right (y)')
+    right_quiver =  ax.quiver(pointervals[0], pointervals[1], pointervals[2], shouldervals[0], shouldervals[1], shouldervals[2], edgecolors="blue", length=0.45, label='Local sensor left (y)')
     
     ax.set_xlim((-1.1, 1.1))
     ax.set_xlabel('x (North-South)')
