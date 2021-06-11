@@ -2,6 +2,16 @@
 tags: [hmv-scratchpad]
 title: sophie-log
 ---
+## 6//11/2021
+Progress since last log:
+  - The first idea from the 5/29/2021 log worked well and resulted in an algorithm accurately displays the orientation of the arms and upper back. 
+  - Made welcome screen with an animation and buttons to enter the visualizer and mess around with the quaternions, upload a user dataset, or choose an OPP dataset to work with.
+ 
+Currently working on:
+  - Getting upload function to work
+  - Abstracting the current algorithm to make a calibration algorithm of sorts
+  - Getting the walking dataset to work with the program-- we will need to add leg bones
+
 ## 5/29/2021
 - I have two ideas that I will be looking into more today. 
   - In yesterdays meeting, we were discussing how to deal with the identity quaternions being different between THREE and OPP worlds. What if we multipy the OPP Quaternion (pre or post I'm not sure yet) by the quaternions that would align the the body segment to the identity quaternion in OPP world thus making those quaternions the temporary idenity quaternions that the real rotations will be applied on top of.
