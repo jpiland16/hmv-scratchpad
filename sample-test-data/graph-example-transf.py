@@ -16,7 +16,6 @@ def ham_product(q1, q2):
     return prod
 
 
-
 def vec_quat_mult(vec, quat):
     """ Multiplies vector3 vec by unit quaternion quat and returns the 
     resulting rotated vector
@@ -28,7 +27,6 @@ def vec_quat_mult(vec, quat):
     print("inverse quat: {0}".format(quat_inverse))
     final_prod = ham_product(ham_product(quat, vec_extended), quat_inverse)
     return final_prod[1:4]
-
 
 
 
@@ -48,7 +46,7 @@ if __name__=='__main__':
             curr_quat = np.empty(4)
             # read quaternion from line
             for i in range(4):
-                curr_quat[i] = float(data_points[i])
+                curr_quat[i] = float(data_points[i]) / 1000.0
             x_new = vec_quat_mult(x_vec, curr_quat)
             print("{0} mult by {1}:".format(x_vec, curr_quat))
             print(x_new)
