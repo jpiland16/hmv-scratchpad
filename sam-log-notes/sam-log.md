@@ -1,3 +1,15 @@
+## 6/19/2021
+- I've been working on a very simple calibration form that sends data in JSON form. It allows a variable number of items and some format specification. Now I just need to ensure that the server side processing part of the server can handle it.
+    - I want to add additional validation so that it's harder to send garbage data. That said, the server should also be able to handle garbage data since the message can be changed between client and server.
+    - I want to make it look prettier using materialUI so it fits in with the theme of the rest of the project. I might want to even make it a dialog popup like the one on the main page.
+    - There should be a way to enter local transforms. For now it can be done with sliders/number inputs, but with infinite time, I would put a little viewport that lets you rotate a sensor relative to the model in 3d space.
+- I then made a submission handler that makes the form do a POST request to the server, which then processes the incoming file and stores it locally in `files/user-uploads`. It stores the raw data (with some comment lines marked with '#') and a metadata file in the format on the master branch.
+    - The server currently treats all incoming data as gyros. It can skip to storage for quaternion measures, but since we can have a mix of gyro and quaternion, we should probably do processing anyway (we can eliminate unnecessary data columns).
+    - I'm not sure where you should go after submitting the form, or what steps the user should take to access the data they just uploaded.
+    - The filename is just based on the upload time for uniqueness. I don't know of how we should arrange deleting cached files or metering the amount of files one user could upload.
+    - The server sometimes hangs after a file upload, which suggests there's some kind of infinite loop? When I use `ctrl+C` to end the program during a hang, it just goes back to working.
+    
+
 ## 6/14/2021
 - Here's where I am leaving my current progress on the ServerSideProcessing lab:
     - I have successfully moved computation for gyro to quaternion to a Python library running on the server. I have successfully animated these integrated quaternions with the Python visualizer to confirm that they are similar to the quaternions from the Opportunity dataset. I have not successfully animated them on the model.
