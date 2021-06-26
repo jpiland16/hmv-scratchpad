@@ -1,3 +1,118 @@
+## 6/25/2021:
+- I have still had a lot of trouble messing around with the visualizer, but I've understood its concepts and could definitely replicate it. I should probably ask Jonathan to clarify things.
+    - I've finally managed to use a THREE scene as the final component after the sequence of loading messages on the landing page. The model in this scene is visually modified in a reasonable way by `batchUpdate`, so I just need to connect the file selection and interpretation to it and we're set. This isn't pushed to Git, and I'd like to talk with Jonathan first so that I'm not stripping away required Visualizer functionality.
+    - I realized I could save some time by re-creating Visualizer (relying heavily on original Visualizer code) rather than attempting to modify it and dealing with the fallout. I've split the Visualizer into a Component that renders the THREE scene to the DOM, and a React-independent library that generates the scene. 
+        - Will this be problematic if we want to use a different model? Probably not, since we can just use isomorphism to call a different external scene creation library.
+    - I wasn't able to get the scene to re-render upon `prop.modelNeedsUpdating` being modified, but I can just use the native THREE animation loop that calls itself through `requestAnimationFrame` and it will always react to updates. I hope that isn't too slow -- that's how it's done on the home page.
+    - I'm confused at how the visualizer maintains its scene after the first render--it has a flag saying that the scene has been created/model has been loaded, and it only creates the scene if that flag is false, but where does it get the scene upon rendering in that case?
+    - It's tought to track down what elements of Viewport's state belong to which files, which gets to be a problem when one component depends on another setting a certain state component in order to not crash.
+- Another note: I don't like the really slow-motion feel when playing the opportunity dataset. The fast way to speed it up is just to (1) increase framerate and (2) skip frames (since we don't need it to be really smooth). I want to see the clapping in real-time, for the cool factor.
+
+## 6/24/2021:
+- After the meeting I tried to modify the Viewport page to only use a Visualizer component conditionally, so that I could fit the Visualizer in as the final stage in the logic on the `FileViewer` component. 
+    - I want to use the Visualizer component with appropriate parameters as a return value for a function which I can place in the JSX DOM returned by Viewport. However, this results in the model and grid not appearing onscreen after loading is complete. I do not know why.
+    - I've made some test code locally to test using a THREE.js scene as a component, and it is definitely possible to make an object-oriented version that can be swiched out as a function result on rendering.
+        - So either (1) I am improperly passing properties to the function that returns the HTML component, (2) it works with object but not functional components, or (3) it is something else that I don't understand. The 3rd one is very possible.
+
+## 6/23/2021:
+```
+- code to do something after 5000 ms:
+//Purely for debugging!
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+//Also for debugging: send timed response to client
+async function respondToClient(socket) {
+    await sleep(5000);
+    socket.emit("file status", { status: "Processing" });
+}
+
+todo:
+- DONE create a standardized messaging system for each of the possible states.
+- create a basic look for each state in the client side component
+- hook up the messaging system on the server side to file status (may need more decisionmaking)
+- make client side do a GET request upon seeing that the status is good (note: it can do this erroneously!)
+- make client side actually visualize the data like a viewport
+
+- standardized messaging system
+	- refer to the possible states. which ones are related to the socket.io messages:
+		1. we're working with your file (processing)
+			'Processing', { progress: <is it possible to put a progress messag here?> }
+		2. there was an error (should include error message)
+			'Error', { errMessage: <error message goes here> }
+		3. your file is ready for downloading
+			'Ready', { no REQUIRED info }
+
+		No, it would be better to make 3 different types of message, a.k.a 'chat message' vs 'contents'
+
+question: is it really okay to use the NAME of the message type and parameterize that, or should I make these all a category based on what webpage?
+	- probably the latter, since we have no other top-level differentiation. What if there's another type of 'file ready' on some other page?
+
+next thing to do: 
+	- (DONE) change from 'loading the data file' state to 'done loading the data file' state, then disconnect
+	- modify all calls to changeState to take in a relevant argument (like the error message for err)
+error checking i know i will need to implement:
+	- when a Get request for a data file happens, ensure that the file is ready and send an error if it's not
+	- get request for either metadata, or for quaternion data fails. If either fails, we should error ourselves out.
+
+"errors" remaining:
+1. (DONE) submitting the form takes you to the main menu instead of to the file viewer.
+2. the landing page doesn't reference the right file. probably should use queries.
+	- which means we should use the http post response.```
+
+## 6/22/2021:
+- I worked a little bit on a page that allows the user to ask for the progress of a remote file and get the file if it's done. I realized that we need file-specific updates, asynchronously, from server to client. 
+    - I imported the [socket.io](https://socket.io/) library and modified server.js to be compatible with it locally. It allows the required asynchronous updates, so I'm working on that now.
+    - The possible states for the user are:
+    	1. we're still loading the model
+        2. we're contacting the server about the model
+	    3. we're still working with your file
+	    4. we're loading your file over the internet
+	    5. there was an error, don't expect your file (done)
+	    6. your file has been processed, and here it is! (done)
+    - ...so the tasks are to (1) make views for each of those states, and (2) make it possible to show those views as a result of state. I'm mainly working on (2) because it presents new technical challenge.
+    - URL params will be used to pass the file name argument, and sockets can authenticate users (somewhat) so that users aren't getting each others' files broadcasted to them -- they are unlisted, ideally. 
+        - Jonathan suggested deleting files upon exiting the website, and I think that would be possible by deleting upon the closing of a socket, if sockets are managed on a per-user level.
+    - Since sockets here are not really meant for transporting large files and GET requests are, a certain message from the server should trigger a GET request in the client which sends the file.
+- I also tested out putting queries in `xmlHttpRequest` objects and it's pretty simple. I haven't yet pushed the code since I want a working demo for the file viewer page before that.
+- Right now the server stores all the data from the python program in local memory when it passes it to the callback function in `server.js`. This means it can probably only hold so much at once, so it might be better (albeit maybe slower) to always pass data using files.
+    - Using a GET request will solve the entire dumb problem of stuffing all the quaternion data into an HTTP POST response, which is what's going on with the upload form right now.
+
+## 6/21/2021
+- Small design thing I don't like: The metadata and file creation are almost independent, and they both have to conform such that the column numbers listed in the output file correspond to the ones in the metadata file. Is this a problem, or is that a reasonable interface?
+- Some notes from today's work, which was a continuation of yesterday's task of implementing server side data writing from form inputs:
+```
+things to do:
+1. in python backend, make the factory data-driven somehow
+2. (DONE) add form validation to calibrationform
+3. (DONE) make submit button in calibratinoform actually work (not really tested hard)
+4. make scrolling possible in calibration form
+5. refactor calibration form to use defined components to avoid clutter
+6. allow user to give custom name to their file, and use that custom name in the file browser
+7. allow user to upload multiple files with the same specifications
+8. make user go to relevant visualizer after submitting their file
+	it is like Gradescope. it either says 'currently processing', or it shows the actual thing
+	idea from jonathan: 1) it's unlisted and 2) it requires a randomly generated key sent by the server
+	also idea from jonathan: delete when session ends. but how?
+9. ensure that the server-side error handling works
+10. allow client to detect when the problem is that the server's down
+
+section of website with submissions: /files/userupload/<file identifier>
+- user sends post req with file and data
+- server accepts, starts processing, sends response:
+	- identifier for what file to look for
+	- password-like thing? (not secure if plaintext)
+- client navigates to /files/userupload/<file identifier> with GET request
+	- server sends message based on status of upload: either loading, error, or complete.
+```
+- Note that the Gradescope UI is one inspiration for combining forms, files, server-side processing, and user-based access.
+
+## 6/20/2021
+- I've expanded on what I was working on yesterday. I made the form in Material UI using the Grid component to try add some order. I'm still new to styles for web UI, so it's not great, but I have retained the ability to construct and send metadata.
+- On the server side, I've added an interface for new Python classes corresponding to getting quaternions from various data types (or using various methods). It's not done yet but it will add the ability to interpret uploaded quaternions.
+- I still need to ask Jonathan about what happens in the user experience after they submit a file. Should they be taken directly to viewing, or should they just be able to pick the file from a browser?
+
 ## 6/19/2021
 - I've been working on a very simple calibration form that sends data in JSON form. It allows a variable number of items and some format specification. Now I just need to ensure that the server side processing part of the server can handle it.
     - I want to add additional validation so that it's harder to send garbage data. That said, the server should also be able to handle garbage data since the message can be changed between client and server.
