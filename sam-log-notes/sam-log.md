@@ -7,7 +7,7 @@
     - The crashes that happened last time the server tried handling the full 50MB data file have an unclear cause. The server must be able to handle those before any pull request.
     - The redefined networking operations added to FileOps.js should be moved to NetOps.js, but I feel that NetOps should change to be more function-oriented. Right now it returns its values by modifying props, which makes it tough to tell its exact job.
 - We are behind on general documentation (from what I can tell) and my efforts are not contributing to that. I need to put serious work into prettying up the code before the pull request -- there are a lot of old commented methods, in-line comments, overly nested chains of async callbacks, etc.
-    - VSCode supports [JSDoc](https://www.google.com/search?q=jsdoc&rlz=1C1CHBF_enUS905US905&oq=jsdoc&aqs=chrome..69i57j0l5j69i60l2.1264j0j7&sourceid=chrome&ie=UTF-8), so I plan on making heavy use of that to clarify how to use our code. Public functions without any explanation are needlessly tough for other programmers to use.
+    - VSCode supports [JSDoc](https://www.google.com/search?q=jsdoc&rlz=1C1CHBF_enUS905US905&oq=jsdoc&aqs=chrome..69i57j0l5j69i60l2.1264j0j7&sourceid=chrome&ie=UTF-8) as Jonathan pointed out in a recent meeting. I plan on making heavy use of that. Public functions without any explanation are needlessly tough for other programmers to use.
 - I'm getting more familiar with the codebase and the various workers. It helps that I'm finally learning how to use VSCode for navigation in sprawled out projects.
 
 ## 6/25/2021:
