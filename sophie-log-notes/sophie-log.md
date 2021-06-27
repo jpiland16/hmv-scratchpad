@@ -2,7 +2,17 @@
 tags: [hmv-scratchpad]
 title: sophie-log
 ---
-## 6//11/2021
+## 6/27/2021
+Progress since last log:
+  - Switched site to HTTPS and set it up for automatic renewal
+  - Got upload function working
+
+Currently goals:
+  - Creating a guide for future contributors to troubleshoot SSL cert renewal if it stops working for some reason
+  - Making a tutorial for users of the website to better understand what the website is and how they can use it
+  - Work on accelerometer leg data?
+ 
+## 6/11/2021
 Progress since last log:
   - The first idea from the 5/29/2021 log worked well and resulted in an algorithm accurately displays the orientation of the arms and upper back. 
   - Made welcome screen with an animation and buttons to enter the visualizer and mess around with the quaternions, upload a user dataset, or choose an OPP dataset to work with.
