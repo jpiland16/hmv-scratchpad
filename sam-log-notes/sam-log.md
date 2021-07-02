@@ -1,3 +1,14 @@
+## 7/1/2021:
+- I've added many more commits to `serverside_processing` to make a Gradescope-like system of file uploads and progress reports. I integrated all current changes to master, but I still don't want to merge because new problems keep appearing that need to be squashed.
+    - Given the progress I have, I promise to make a merge request by the end of Saturday. Ideally we could review it together to go over the changes because there are quite a few, and I want to annoy Jonathan with the changes to visualizer **before** I upload rather than after.
+    - There are now quite a few redundant files:
+        - The `visualizer_experimental` directory should be merged into `visualizer` and overwrite any overlaps.
+        - `FileProcessor.js` in serverside is unused.
+        - There are unused functions in `FormFileProcessor.js` in server side.
+        - `server.js` has unused functions and unused/outdated HTTP request handlers.
+    - I want to know whether things will work on the remote server **before** the merge, and the only way I know to do that is by `git checkout serverside_processing` on the remote server and seeing what happens.
+- Remaining issue: when you upload a file, get redirected to the viewport, and load in the model, the model shows the first transformation in the data but does not react to moving the time slider. Then, switching to another data file and back will cause things to behave as expected.
+
 ## 6/26/2021:
 - The Visualizer component now shows up as the final state of the file viewer, and it correctly portrays the THREE scene (including changes to the model!) and has orbit controls. The client fully downloads whatever file was passed in as props to the new Visualizer component, then fully animates it just like before async loading was added.
     - Major features waiting for implementation:
