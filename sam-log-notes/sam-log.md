@@ -1,3 +1,18 @@
+## 7/3/2021: 
+- How to run the production build of the server on any machine:
+    1. Run `npm run build`.
+    2. Run `node server.js`.
+    - Note: that this might make the server listen on port 5000. We might need to adjust `server.js` to make sure we're listening on the correct port, and we definitely need to adjust it to handle http requests (not 'secure') and redirect them to the https server.
+    - Other note: The 'dev' version of /visualizer might be unavailable because I removed the `exact` keyword in the router for /visualizer in order to accomodate queries (not sure that's necessary!).
+- The problem from yesterday had to do with Socket.io's handling of URLs. I was passing in `window.location` as the URL, but for some reason that was resulting in a GET request being sent to the server, which then responded with delivering `index.html` which redirects us to the main visualizer page.
+    - The fix: Just pass in the options when initializing a Socket on the client side -- **do NOT pass a URL in to the Socket initializer**.
+- There was another crash that only happens in the production build where `lineNumRef` was not reset to 0 when the `lineNumber` prop was, so the PlayBar automatically set `lineNumber` to be whatever `lineNumberRef` had been before loading the most recent file. Now it's fixed (I think).
+
+## 7/2/2021:
+- I have been testing the server to see whether it would work on the VM by just running `node server.js` and serving the built `index.html` file. Once we have a way to run the files on the VM server, we're good to merge.
+    - The problem is that clicking a file to view causes the page to reload as soon as `onSelectFileChange` starts executing in `FileOps.js`. The very first line, which sets `props.data.current` to 0, causes the reload, and the reload doesn't include any query params, just `/visualizer`. Why does this happen when I server through the node server but not in the development build?
+        - This might be fixed by serving through whatever works best for React, and using a separate node server to handle API requests. We could have both servers on the same machine.
+
 ## 7/1/2021:
 - I've added many more commits to `serverside_processing` to make a Gradescope-like system of file uploads and progress reports. I integrated all current changes to master, but I still don't want to merge because new problems keep appearing that need to be squashed.
     - Given the progress I have, I promise to make a merge request by the end of Saturday. Ideally we could review it together to go over the changes because there are quite a few, and I want to annoy Jonathan with the changes to visualizer **before** I upload rather than after.
