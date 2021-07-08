@@ -1,3 +1,10 @@
+## 7/7/2021:
+- The THREE.js scene now loads when the Viewport is first initialized, and the individual visualizers just reset the model.
+    - There's strange behavior because setting state in react doesn't take effect until the next render. The Viewport provides a Promise in its props that is fulfilled when the THREE scene is loaded, but none of the props have changed to reflect the new scene by the time the promise is first fulfilled.
+    - To mitigate this, I've changed resetModel to not do anything if the 'bones' property is null. This is fine as long as the model starts with the right position.
+- I still need to modify the comments on NetOps to match the new props requirements.
+- I am trying to figure out why the labs don't open. Setting the `fileStatus` prop to "Complete", which is how we activate the visualizer, doesn't change the FileViewer's appearance. This is super confusing since its output is a function of `fileStatus`.
+
 ## 7/3/2021: 
 - How to run the production build of the server on any machine:
     1. Run `npm run build`.
