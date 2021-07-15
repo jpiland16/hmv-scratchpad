@@ -64,6 +64,7 @@ if __name__=='__main__':
     parser.add_argument("--offset", "--o", help="Number of columns into the data file to start reading", type=int)
     parser.add_argument("--float", help="Divide input values by 1000", action="store_true")
     parser.add_argument("--maxlines", "--max", help="Max number of rows to read from  file", type=int)
+    parser.add_argument("--separator", "--sep", help="Type of separator between data columns", default="space", choices=['space', 'comma'])
     args = parser.parse_args()
 
     x_vec = np.array([1,0,0])
@@ -77,6 +78,11 @@ if __name__=='__main__':
     # if len(sys.argv) > 5:
     #     line_skipping = int(sys.argv[5])
 
+    separator_chars = {
+        'space': ' ',
+        'comma': ','
+    }
+
     # graph result
     pointervals = []
     shouldervals = []
@@ -87,7 +93,7 @@ if __name__=='__main__':
             line_num += 1
             if max_lines != -1 and line_num > max_lines:
                 break
-            data_points = line.split(' ')
+            data_points = line.split(separator_chars[args.separator])
             if data_points[0] == "#":
                 continue
             curr_quat = np.empty(4)
@@ -100,6 +106,7 @@ if __name__=='__main__':
             # print(x_new)
             # print("")
             pointervals.append(x_new)
+            # pointervals.append(np.array([0,0,0,0]))
             z_new = vec_quat_mult(z_vec, curr_quat)
             shouldervals.append(z_new)
             y_new = vec_quat_mult(y_vec, curr_quat)

@@ -1,3 +1,57 @@
+## 7/13/2021:
+- The other big design problem with this dataset is that the data is split into one file per sensor. What should I do there?
+    - Ideally there should be an option to submit multiple files and have them amalgamated into one file. How would the process be for that?
+        - User puts multiple files in the form.
+        - User adds a sensor on the form.
+        - Next to 'line number', if there's multiple files, it asks you to select a specific file that you are targeting.
+        - Then this form data is sent to the server, which also receives multiple files and treats them like one big file with a bunch of columns.
+            - But there is a conflict here! What if we have multiple files that have the same columns, so we want to append them as extra rows? There are two sub-cases here:
+                - Case 1: User wants to submit multiple files and have them available independently, but wants to process them in the same way.
+                - Case 2: User wants to submit multiple files and have them available together, as if they had submitted one file with a bunch of columns. This requires that the files all have enough columns (and hopefully identical ones, but garbage in = garbage out).
+                - I'm 100% willing to drop case 2, since you can just copy paste one file onto the end of another if you want to append them.
+        - Here is my proposal: Just like you can make a sensor that has a bunch of attributes, you can make a 'file group' that has one or more files. And then you can assign a sensor the tuple (file_group, file, line_number) to tell it that the sensor data is on line 'x' of file_group 'f'.
+            - Or maybe you can either 'horizontally append' (more columns) or 'vertically append' (more rows) for an individual submission. But once again, we have no group of files such that we want to see them parsed as one file, so let's give that up. Thus, you can create a new 'file group' and then 'horizontally append' files to it. Then you can specify more files that are treated the same way as the schema in the file group.
+                - But how do we add another set of files to the same schema as an existing horizontal filegroup? 
+            - Solution: One row is a group of horizontally appended files. The whole group of rows is the entire set of files who will follow the schema. The trade-off is that now we do not allow multiple schemas per submission, but that is okay. I will make a mock-up at some point.
+- I've used micropython-fusion to integrate the data for `gait-dataset-1-lowerleftleg.txt`, which is a copy of `1-000_00B432B6.txt`, which is sensor B6 (left 'shank', or left tibia) doing a calibration movement where the subjects face in a number of directions in the room and then lift their legs.
+    - It seems to generate reasonable data with a lot of shakiness, when I use 100Hz as the speed and use columns 5-13, which are acc+gyro+magnet with the accelerometer already adjusted for gravity. The command used to view the lower left leg data was `python graph-animate-transf.py data-samples/fusion_output_gait_1.dat --o 0 --max 900`.
+    - I will try out some more data, maybe from arms, to see if there's anything really odd about it.
+    - The link to the data & article is [here](https://www.nature.com/articles/s41597-020-0563-y#Sec6).
+    - The command to take dataset ‘#-000_00B432**.txt’ and extract data using micropython-fusion: `python micropython-fusion-master/fusiontest_gait.py data-samples/gait-data-raw/#-000_00B432**.txt.csv`
+        - example: `python micropython-fusion-master/fusiontest_gait.py --start 5 data-samples/gait-data-raw/1-000_00B43295.txt.csv --output_file data-samples/gait-data-processed/fusion_output_calib_wrist.dat`
+    - Good news: Using micropython-fusion on the calibration data, we get something somewhat reasonable. The calibration data involves (1) rotating your back 30 degrees each side three times, then (2) lifting your arm three times, then (3) lifting each leg three times. It takes about 20 seconds. When we integrate the data and graph it with the python tester, we start with a rotation three times about the x-axis. The x-axis is the vertical axis, so rotation about it is side to side as expected!
+        - Bad news is that it's a lot more than 30 degrees, and it generally just seems that the movements are all exaggerated. Next I plan on using the Euler angles to see what that looks like.
+    - I've made a DatatypeHandler for Euler angles, and a driver for it. I used the trunk dataset as degrees with `python use-datatype-handler.py data-samples/gait-data-raw/1-000_00B432CC.txt.csv euler 21 data-samples/gait-data-processed/gait-1-euler.dat` to generate quaternions.
+        - The graphed result is very confusing. It has VERY slow turning that seems correct for the trunk rotation, and then it stands still for a couple seconds. Where is the arm lifting? Next we can try with the lower left leg. It has likely been smoothed in post processing.
+        - For the shin data, you can definitely see it turning up toward the end, so that's a good sign. It doesn't really agree a lot with the accel/gyro/etc. data, though, especially over the magnitude of the rotations.
+
+## 7/12/2021:
+- What have I done this week?
+    - Added caching of the model to Viewport, so that the model is Viewport-level state (it should be FileViewer-level state). Now the model only loads once per load of the Viewport.
+    - Added loading indicators for loading the data file and for model loading. The indicators in dev mode are slow and never show 100%.
+    - Put a dirty patch on a new branch to allow running Sophie's 7/5 lab.
+    - Refactor bone operations and math ops to be portable functions that don't require `props` as an argument. Considered doing the same with other viewport workers, but those functions will never be portable, since they're just a series of Viewport state-setters bundled together.
+        - The equivalent in OOP is to have interfaces revealed to each worker, which makes for a lot of interfaces.
+    - Made a PlayBar component that accepts a callback and doesn't care what it's used for, which is opposed to the current PlayBar which (1) has hard-coded size and (2) uses a hard-coded callback when changed. The new PlayBar also doesn't progress while being clicked, which is nice.
+        - It's not implemented because it matches the size of its parent div, so we need CSS structure for visualizers in order to make it work.
+    - Messed with CSS structure for Viewport so that the menu isn't so hacked in and so that magic values are minimized. Doesn't quite work because reworking the menu is required. Also overlaps with Sophie's work so we need to talk about it there.
+        - This includes moving top action bar, playbar inside of Viewport for replication, which matches Sophie's work unfortunately.
+    - slightly refactor the python interface for server side sensor processing, add documentation, slight refactor.
+
+## 7/11/2021:
+- There has been significant progress on making the page layout less hard-coded in pixel sizes, and for moving the per-fileviewer components to the fileviewer so that they can be replicated in the Viewport.
+    - **Edit**: This was fixed by giving a minimum width to the menu panel. Big issue right now: When you give any flex space to the Visualizer and you close the menu panel, reopening it doesn't give it its required 40vw of space.
+    - Current problem: When the menu panel has a minimum width, closing the menu panel and reopening it doens't cause the container div for the visualizer to resize, so the camera gets messed up.
+
+## 7/8/2021
+- I would like to use CSS to make the Viewport automatically determine the balance in screen space between the FileViewer and the Menu. This is especially important since we'll have multiple FileViewers.
+    - It's really tough because of the menu. The menu has two parts: the static vertical ribbon containing the 'open/close' button, and the Paper that contains all the menu items. Both are positioned absolutely, and the Paper with the menu actually goes in the SAME SPOT on the page as the button, which is a nightmare when you want to make items align a certain way.
+        - Menu should be changed so that it is a toggle between the small 'open' button and the entire menu, and nothing there should be relatively positioned.
+        - I have no idea why absolute positions cause the height of the components to be incorrect.
+- In order to fix dev mode, some checks were added to existing files to bypass the normal loading process. Ideally, we would instead just make an alternative implementation of FileViewer for viewing a lab.
+    - FileViewer: modify FileStatus switch function to check for props.dev 
+    - Animator: modify Animator to check for props.dev
+
 ## 7/7/2021:
 - The THREE.js scene now loads when the Viewport is first initialized, and the individual visualizers just reset the model.
     - There's strange behavior because setting state in react doesn't take effect until the next render. The Viewport provides a Promise in its props that is fulfilled when the THREE scene is loaded, but none of the props have changed to reflect the new scene by the time the promise is first fulfilled.
