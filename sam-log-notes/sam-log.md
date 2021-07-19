@@ -1,3 +1,27 @@
+## 7/18/2021:
+- I've tinkered a bunch with the quaternions for the subject-1 calibration data in the gait dataset, and now I have a quaternion data and metadata that are
+significantly better than nonsense, though they're still a little physically impossible (which just means they need some tweaking). Observations:
+    - Even though all the sensors have the same local transformation (xyzw = (-0.5, -0.5, 0.5, 0.5)), I can't use that as the global transformation, and I am
+    not sure why. I've left the global transformation as just the identity.
+    - The view when I first load the model is broken, and then when I move the playbar and go back to the first set of quaternions, the view looks different than it did originally. Why?
+    - I needed to add ROOT in order to make the legs correct (not crossed), but applying BACK data to ROOT causes the model to shift forward and back, pivoting around the origin instead of just moving in place. Why is it doing that for this dataset and not for OPPORTUNITY? Which bone should move to make sure the pelvis faces the right way?
+    - There's just a wrist sensor, and the upper arm often faces a slightly different direction. When I assign wrist data to the upper arm, the arm clips through the body often, but when I assign it to the lower arm, the upper arm just T-poses, which is not accurate. How should this be handled?
+    - The lower legs are at a good orientation but the rest of the body is tilted, as if those sensors are all arranged with some tilt compared to gravity. This is probably solvable with more tweaking, but the fact that both are tilted the same way makes it dubious--they should be symmetrical (approximately).
+- The next tasks are to (1) merge and upload more trials (ideally one with an actual gait), and (2) add a handler to the upload form for Euler angle data using the new handler.
+    - Following the same process as the calibration dataset for the "flat, even surface" walking data, we get a pretty convincing result where you can definitely see walking going on. The same problems show up as before -- the biggest problem is that there's a significant tilt for the thighs and ROOT.
+    - It was easy to add the Euler angle handler to the form and to server side processing, but it still required modifying code. The ideal refactor would extract out all static options in the calibration form to a JSON file, and would do something similar for the factory in `server_side`.
+
+## 7/15/2021:
+- Important python commands used:
+    - `append-files-horizontally.py data-samples/gait-data-raw/subject1-surface1 appended_output.txt`: Created a file called `appended_output.txt` which contains the contents of all files in the target directory stiched together horizontally.
+    - `python use-datatype-handler-multi.py appended_output.txt euler 21 30 6 gait-calib-subj1-all.dat`: Created a file called `gait-calib-subj1-all.dat` which contains the quaternion representation of the Euler angles from the input file. This can be directly interpreted by the model.
+- I stitched together the gait dataset's files and processed them using a new multi-sensor handler (similar to the one in server_side). Then I made a relevant metadata.json file and gave it to the server, and it did not crash the server. It looks pretty good, save for a couple of issues with global transforms.
+    - Everything is facing backwards, which is fine except that we don't have control over every single bone. So either the root should face backwards, or the global transform should turn us 180 degrees about the y-axis.
+    - The legs seem like they need to be rotated 180 degrees about the medio-lateral (left-right) axis in order to be facing the right way relative to the body.
+
+## 7/15/2021:
+- The delta quaternion data pretty much agrees with the roll/pitch/yaw data for the 'trunk' sensor in the gait dataset, except that it may be flipped across the x (up) axis. The reason that I wasn't seeing the leg lifts previously was the `--max 900` arg in `graph-animate-transf.py`, which was cutting off the last two thirds or so of the dataset. This is definitely going to look good on the model if I get the right setup quaternions.
+
 ## 7/13/2021:
 - The other big design problem with this dataset is that the data is split into one file per sensor. What should I do there?
     - Ideally there should be an option to submit multiple files and have them amalgamated into one file. How would the process be for that?

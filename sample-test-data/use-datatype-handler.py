@@ -1,17 +1,28 @@
 import argparse
 from datatype_handlers.EulerAngleHandler import EulerAngleHandler
+from datatype_handlers.DeltaQuatHandler import DeltaQuatHandler
+
+data_handlers = {
+    'euler': EulerAngleHandler(),
+    'delta_q': DeltaQuatHandler()
+}
+
+
+def get_handler(data_type):
+    return data_handlers[data_type]
+
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="Use a datatype handler on a target file")
     parser.add_argument('target_file', help='the file to read')
-    parser.add_argument('datatype', help='what type of data to parse', choices=['euler'])
+    parser.add_argument('datatype', help='what type of data to parse', choices=['euler', 'delta_q'])
     parser.add_argument('start_column', type=int, help='the first column of the data (index starts at 0)')
     parser.add_argument('--time_column', type=int, help='column index for time in millis', default=0)
     parser.add_argument('output_file', help='destination filepath for output quaternions')
     parser.add_argument('--degrees', help='input is degrees instead of radians', action='store_true') # Currently not used. the handler assumes it's degrees...
     args = parser.parse_args()
 
-    handler = EulerAngleHandler()
+    handler = get_handler(args.datatype)
     input_data = []
     with open(args.target_file) as f:
         datalines = f.readlines()[1:] # Skip first line for now

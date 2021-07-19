@@ -20,17 +20,23 @@ def eulerToQuaternion(roll, pitch, yaw):
 
 class EulerAngleHandler(DatatypeHandler):
     def get_quaternions(self, data, start_column, time_column):
-        RADIANS_PER_DEGREE = (2 * np.pi) / 360.0
         """
         Overriddes parent method. 
         Assumes input data is in the form of Euler angles in degrees.
         """
+        RADIANS_PER_DEGREE = (2 * np.pi) / 360.0
         quaternion_list = []
         for line in data:
             if len(line) <= start_column + 2 or line[0] == '#':
                 continue
-            roll = float(line[start_column]) * RADIANS_PER_DEGREE
-            pitch = float(line[start_column+1]) * RADIANS_PER_DEGREE
-            yaw = float(line[start_column+2]) * RADIANS_PER_DEGREE
+            roll_raw = line[start_column]
+            pitch_raw = line[start_column+1]
+            yaw_raw = line[start_column+2]
+            if roll_raw == 'NONE' or pitch_raw == 'NONE' or yaw_raw == 'NONE':
+                quaternion_list.append(np.array([1,0,0,0]))
+                continue
+            roll = float(roll_raw) * RADIANS_PER_DEGREE
+            pitch = float(pitch_raw) * RADIANS_PER_DEGREE
+            yaw = float(yaw_raw) * RADIANS_PER_DEGREE
             quaternion_list.append(eulerToQuaternion(roll, pitch, yaw))
         return quaternion_list
