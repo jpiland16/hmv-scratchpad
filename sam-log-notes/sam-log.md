@@ -1,3 +1,9 @@
+## 7/20/2021:
+- Changing the metadata file to put ROOT at the start eliminates the issue where the model has the legs mixed up when it is first loaded. The implication is that parent elements need to come before child elements in the metadata file, probably because parent elements can only affect the positions of child elements whose quaternions have not been set? This doesn't work too well with the current system where the user can put the sensors in any order.
+    - First idea: Make the Animator process the bones in topologically sorted order.
+    - Second idea: Make the creator of the metadata file put the entries in topological order.
+    - I favor idea 1 because it wouldn't have to trust another part of the program to come up with the correct formatting.
+
 ## 7/18/2021:
 - I've tinkered a bunch with the quaternions for the subject-1 calibration data in the gait dataset, and now I have a quaternion data and metadata that are
 significantly better than nonsense, though they're still a little physically impossible (which just means they need some tweaking). Observations:
@@ -13,7 +19,7 @@ significantly better than nonsense, though they're still a little physically imp
 
 ## 7/15/2021:
 - Important python commands used:
-    - `append-files-horizontally.py data-samples/gait-data-raw/subject1-surface1 appended_output.txt`: Created a file called `appended_output.txt` which contains the contents of all files in the target directory stiched together horizontally.
+    - `append-files-horizontally.py <directory-containing-sensor-data-files> <output-filepath>.txt`: Created a file called `appended_output.txt` which contains the contents of all files in the target directory stiched together horizontally.
     - `python use-datatype-handler-multi.py appended_output.txt euler 21 30 6 gait-calib-subj1-all.dat`: Created a file called `gait-calib-subj1-all.dat` which contains the quaternion representation of the Euler angles from the input file. This can be directly interpreted by the model.
 - I stitched together the gait dataset's files and processed them using a new multi-sensor handler (similar to the one in server_side). Then I made a relevant metadata.json file and gave it to the server, and it did not crash the server. It looks pretty good, save for a couple of issues with global transforms.
     - Everything is facing backwards, which is fine except that we don't have control over every single bone. So either the root should face backwards, or the global transform should turn us 180 degrees about the y-axis.
