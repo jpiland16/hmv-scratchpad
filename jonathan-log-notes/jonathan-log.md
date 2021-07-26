@@ -2,10 +2,82 @@
 tags: [hmv-scratchpad]
 title: jonathan-log
 created: '2021-05-24T17:36:41.689Z'
-modified: '2021-05-31T12:57:17.018Z'
+modified: '2021-07-25T14:24:04.422Z'
 ---
 
 Note: all quaternions in these notes will be given in XYZW format.
+
+## 7/25/2021
+
+I hadn't been making a ton of notes for a while, since most of my recent work has been UI improvements such as logos and title bars as well as testing some labs, but some of my recent updates are given below.
+
+ - Create a logo and incorporate it into the title bar
+ - Test token generation to keep user files private
+ - Test using the leg data to prevent the entire model from leaning
+   - Incorporate position modifications to keep the model in the center of the screen
+ - Merge Sam's pull request to implement socket.io
+
+There are still some outstanding changes that need to be made, including:
+ - Recursive folder validation
+ - Disallowing clicking of multiple files repeatedly, or stopping the loading of previously clicked files
+ - Implement LTQ as part of the upload form
+
+Soon, I would like to accomplish the following:
+ - [ ] Implement a global flag to disable `console.log` in the browser
+ - [ ] Make it so that the GTQ is pre-applied whenever a dataset is uploaded to the server, to save computation time
+ - [ ] Get the sliders working again
+ - [ ] Get the Visualizer object working as well as the current visualizer
+ - [ ] Get labs working
+ - [ ] Implement user privacy for file uploads
+ - [ ] Possibly work on split screen
+ - [ ] Create documentation
+ - [ ] Make it so that the same DatatypeHandlers we apply to uploaded files can be run against the existing Opportunity files
+
+## 6/15/2021
+
+ - Incorporate leg data (symmetric / out of phase ?) (priority)
+ - Walk around the room (?)
+
+ NOTES:
+  - Should secure it (?)
+  - Domain name OK
+  - How to protect it from breaking (user uploads, privacy)
+
+ NEXT:
+  - Look at other datasets
+
+## 6/10/2021
+
+ - TODO:
+   - [ ] Disable OK button while file is uploading
+   - [ ] Add progress bar
+ - Below
+
+## 6/9/2021
+
+ - Looking at abstracting the hard-coded column numbers and transformations for the opportunity dataset so that we can use the site for multiple datasets. Making a list of places where code might need to be abstracted:
+   - *Viewport.js*
+     - [ ] `onLoadBones` (setParents) (?) line 260
+   - *Animator.js*
+     - [ ] `props.outputTypes.current` line 35
+     - [x] `if (i <= 1) ...` (identity rotations) line 47
+     - [x] `targetQ.premultiply` (rotate body to stand upright) line 63
+   - *CardItem.js* (last priority)
+     - In general, there is a lot of hard-coded data that deals with the Opportunity Dataset. Might need to pull some of the values out into paramters.
+
+## 6/8/2021
+
+ - Over the past week, made several improvements to the site:
+   - Added upload functionality to server
+   - Added file viewing using Sophie's quaternions
+   - Cleaned up the settings page
+   - Divided site into a default mode and development mode
+   - Added a setting for displaying time in MM:SS.mmm rather than just milliseconds
+   - Changed the default settings for time display and cards display
+
+## 6/2/2021
+
+ - Regarding yesterday's success, it looks like I just got a bit lucky by trying random numbers, since my equations were not correct. [Sophie's method](https://github.com/jpiland16/hmv_test/blob/4cde132f42a589eb0fb9e6db79342e9f1918cf47/src/components/menu/components/main-panel/subpanels/Labs/Sophie20210530/test1.js#L111-L131) defintely looks to be the most correct, and it has sound logic behind it.
 
 ## 5/31/2021
 
@@ -31,6 +103,7 @@ Note: all quaternions in these notes will be given in XYZW format.
      - [ ] figure out if either #5 or #15 is the correct initialization quaternion (or neither)
      - [ ] apply whatever reasoning comes out of the above into the other joints (maybe)
 
+ - Added a webhook to GitHub so that `push` events automatically trigger a website rebuild (`git pull` then `npm run build`) on our web server
      
 ## 5/30/2021
 
