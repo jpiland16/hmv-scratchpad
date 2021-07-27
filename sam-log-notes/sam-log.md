@@ -1,3 +1,39 @@
+## 7/27/2021:
+- What have I done in the past week?
+    - I've made (and discussed with the team) a list about what we have left to do in the project. here it is from the slack:
+```
+Here is a text dump on the topic of what we have left to do this summer. Feel free to add to it or correct me.
+would we be happy to ship the project as it is right now? why or why not?
+- what it does have: 
+    - can select among data files and view them. can switch between them
+    - reports errors when getting files
+    - can upload files, if they have the same local transformations as opportunity
+    - can view 'cards' with information about locomotion, can toggle them appearing
+    - documentation for uploading a file
+    - some JSDoc for portable functions in the program, accessible from the website
+    - contact form for sending email to mantainers
+what it needs to have:
+    - working 'use opportunity dataset' button on the first page. Right now it encounters an error (not a crash! :]) loading the file
+    - CSS on the upload form to match its appearance with the rest of the site, with corresponding change in 'getting started'
+    - enough documentation to allow someone besides us to get started in a reasonable time, fix basic issues, add features
+    - a more precise definition of 'documentation'!
+what it wants to have:
+    - Smartphone dataset support, general support for 'low sensor count' data
+    - local transformation customization on the upload form
+    - authentication to prevent users accessing each others' uploads, us seeing uploads
+    - multiple viewports for simpler side-by-side comparison
+    - no card display on visualizer when there's an error
+    - ROOT bone moves on its own instead of pivoting around the origin? To solve the issue where the gait dataset has the model swinging back and forward
+    - code design that is intuitive enough to reduce the need for 'documentation'
+    - solution to the one current issue on GitHub
+```
+- I've also gotten started on a guide for future maintainers of the project, and I feel some form of that will be relevant, considering the size of the project.
+    - I really am not sure what to delve into here. it feels like the main hurde in my understanding of the project was knowing how React works, esp. with Hooks.
+- Beyond that, there might have been some refactors, but I think those were mostly last week with viewport helpers. I've put some thought into making NetOps into a wrapper with callbacks, but that just has the same refactoring implication as everything else in `viewport-workers`--it involves moving the private methods back into ``viewport.js``.
+- I've put some decent effort into authentication and private data access, since that is a neat feature for the project AND it is something I want to know in general for software design.
+    - I did a [tutorial](https://auth0.com/blog/complete-guide-to-react-user-authentication/) for OAuth2 using Auth0, which is a service for hosting OAuth-enabled apps which has a free version suited for sites with low traffic. I also tried a tutorial with FusionAuth but was unable to get it running because it wasn't meshing well with the MySQL database that it requires.
+    - OAuth will be a pain to implement, but I'm willing to do it if the team doesn't require anything more urgent. That said, I'll do 'documentation' (JSDoc+READMEs) from now until the end of the project if needed.
+
 ## 7/20/2021:
 - Changing the metadata file to put ROOT at the start eliminates the issue where the model has the legs mixed up when it is first loaded. The implication is that parent elements need to come before child elements in the metadata file, probably because parent elements can only affect the positions of child elements whose quaternions have not been set? This doesn't work too well with the current system where the user can put the sensors in any order.
     - First idea: Make the Animator process the bones in topologically sorted order.
@@ -156,6 +192,7 @@ async function respondToClient(socket) {
     await sleep(5000);
     socket.emit("file status", { status: "Processing" });
 }
+```
 
 todo:
 - DONE create a standardized messaging system for each of the possible states.
@@ -188,7 +225,7 @@ error checking i know i will need to implement:
 "errors" remaining:
 1. (DONE) submitting the form takes you to the main menu instead of to the file viewer.
 2. the landing page doesn't reference the right file. probably should use queries.
-	- which means we should use the http post response.```
+	- which means we should use the http post response.
 
 ## 6/22/2021:
 - I worked a little bit on a page that allows the user to ask for the progress of a remote file and get the file if it's done. I realized that we need file-specific updates, asynchronously, from server to client. 
