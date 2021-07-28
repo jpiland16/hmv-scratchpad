@@ -15,6 +15,7 @@ It will be helpful to be familiar with the following programming languages, data
 - Node.js - the server uses the Node framework to handle incoming requests and to manage library dependencies.
 - The layout of the [website](https://vcm-20389.vm.duke.edu/) - 🤔 go figure.
 - THREE.js - The visualizer uses THREE.js to display a 3D scene to the user.
+- JSDoc - an API documentation generator for JavaScript.
 
 ## How to run the app locally
 - Option 1 (Recommended): Run the client in dev mode and server locally
