@@ -2,7 +2,7 @@
 tags: [hmv-scratchpad]
 title: 'hmv_test: lab guidelines'
 created: '2021-05-26T20:18:32.697Z'
-modified: '2021-05-27T18:42:42.671Z'
+modified: '2021-07-31T20:11:50.982Z'
 ---
 
 # hmv_test: *lab guidelines*
@@ -15,7 +15,7 @@ This page aims to explain the process and requirements of creating a working lab
 
  - Obtaining or providing input data in some format
  - Adjusting relevant model settings (FPS, repetition, global quaternions, etc.)
- - Responding to a change in the slider value and calling `props.batchUpdate` for each bone you wish to move
+ - Responding to a change in the slider value and calling ~~`props.batchUpdate`~~ `props.visualizer.acceptData` ~~for each bone you wish to move~~ with a single parameter of an object whose values are  of type `THREE.Quaternion` for each key/bone.
 
 ### What the existing code will accomplish
 
@@ -166,17 +166,7 @@ React.useEffect(() => {
 
 I wrapped the function updating the model in a `useEffect` hook, to tell React to perform this action after rendering the UI.
 
-
-This line should have been in the next `if` statement. Not sure why I left it out there to dry. It's placement doesn't affect much, however.
-
-### Line 70
-
-```js
-props.useGlobalQs.current = USE_GLOBAL;
-```
-Force-enables the `useGlobalQs` setting any time the model will move.
-
-### Line 71
+### Line 68
 
 ```js
 if (props.timeSliderValue !== props.lastIndex.current && props.data.current.length > 0) {
@@ -184,7 +174,7 @@ if (props.timeSliderValue !== props.lastIndex.current && props.data.current.leng
 
 The code inside this `if` statement is executed when the `timeSliderValue` becomes different from the `lastIndex` upon which the model was updated. This is where your code should move the Three.js model. *(Note: I had to add the additional condition of `props.data.current.length > 0` because of the asynchronous `XMLHttpRequest`. Again, this would not be necessary if using hard-coded data.)*
 
-### Lines 74-80
+### Lines 72-78
 
 ```js
 let columnStart = boneList[boneNames[i]];
@@ -198,22 +188,29 @@ let q = new THREE.Quaternion(
 
 Updating each of the selected bones with the Opportunity quaternions.
 
-### Line 81
+### Line 79
 
 ```js
 props.lastIndex.current = props.timeSliderValue;
 ```
 
-Prevents an infinte loop of re-rendering once the 3-D model has been updated. This line is extremely important! *(Another note: I feel like this line __does__ need to be inside the `for` loop so that re-rendering has no chance of occuring after a `batchUpdate`, even though it is redundant to call this function repeatedly. I haven't actually tried moving it outside of the loop, however.)*
+Prevents an infinte loop of re-rendering once the 3-D model has been updated. This line is extremely important! ~~*(Another note: I feel like this line __does__ need to be inside the `for` loop so that re-rendering has no chance of occuring after a `batchUpdate`, even though it is redundant to call this function repeatedly. I haven't actually tried moving it outside of the loop, however.)*~~ Honestly, there should be no chance of re-render now since we removed `batchUpdate`.
+
+### Line 80
+
+```js
+dataObj[boneNames[i]] = q
+```
+~~The first parameter should be a string with the name of the bone (currently supported: `ROOT`, `BACK`, `RUA`, `RLA`, `LUA`, `LLA`, `LSHOE`, and `RSHOE`) while the second parameter should be an array of quaternion values.~~ `boneNames[i]` should be one of the following: `ROOT`, `BACK`, `RUA`, `RLA`, `LUA`, `LLA`, `RUL`, `RLL`, `LUL`, `LLL`, `LSHOE`, and `RSHOE`, and `q` should be a `THREE.Quaternion`.
 
 ### Line 82
 
 ```js
-props.batchUpdate(boneNames[i], [q.x, q.y, q.z, q.w]);
+props.visualizer.acceptData(dataObj)
 ```
-The first parameter should be a string with the name of the bone (currently supported: `ROOT`, `BACK`, `RUA`, `RLA`, `LUA`, `LLA`, `LSHOE`, and `RSHOE`) while the second parameter should be an array of quaternion values.
+Send the data to the visualizer.
 
-### Lines 87-93
+### Lines 86-92
 
 ```JSX
 return (

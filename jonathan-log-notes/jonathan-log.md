@@ -2,10 +2,22 @@
 tags: [hmv-scratchpad]
 title: jonathan-log
 created: '2021-05-24T17:36:41.689Z'
-modified: '2021-07-25T14:24:04.422Z'
+modified: '2021-07-28T19:56:08.981Z'
 ---
 
 Note: all quaternions in these notes will be given in XYZW format.
+
+## 7/27/2021
+
+I've been working on the `MannequinVisualizer` class to make it usable in the site. The first step was to implement a very similar algorithm to what we were already doing (see [this commit](https://github.com/jpiland16/hmv_test/commit/24cee540b1114dfce91c8d7d319aef6dba22f75f)).
+
+The next steps I took were as follows:
+ - Implement a recursive tree traversal in several places to simplify the code and to prepare for doing fewer calculations along the lines of `getLocalFromGlobal` ([this commit](https://github.com/jpiland16/hmv_test/commit/1514005dcedfbec14cb51653fe8d11f6ff5b0205)).
+ - Make `BasicVisualizerObject` even more generalized to accomodate for more types of visualizers, and create a new class called `ThreeJsVisualizer` ([this commit](https://github.com/jpiland16/hmv_test/commit/10c8f4d36bf0d22f847bcdc16afac753b8a48f98)).
+ - Simplify calculations using the tree traversal ([this commit](https://github.com/jpiland16/hmv_test/commit/c58f3818acf6682b7b8ab59f6ea7cc78a79e72fa))
+ - Remove unused code
+ - Merge master into my branch
+
 
 ## 7/25/2021
 
@@ -23,10 +35,10 @@ There are still some outstanding changes that need to be made, including:
  - Implement LTQ as part of the upload form
 
 Soon, I would like to accomplish the following:
- - [ ] Implement a global flag to disable `console.log` in the browser
+ - [x] Implement a global flag to disable `console.log` in the browser
  - [ ] Make it so that the GTQ is pre-applied whenever a dataset is uploaded to the server, to save computation time
  - [ ] Get the sliders working again
- - [ ] Get the Visualizer object working as well as the current visualizer
+ - [x] Get the Visualizer object working as well as the current visualizer
  - [ ] Get labs working
  - [ ] Implement user privacy for file uploads
  - [ ] Possibly work on split screen
