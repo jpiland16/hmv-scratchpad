@@ -1,4 +1,62 @@
+## 8/2/2021
+- I should probably be working more on documentation right now, but instead I've been working on a tool for easing the process of finding local transforms
+for new datasets, since I'm not happy with the current process and would like some instant feedback and sliders. This is also a great opportunity to get used
+to Jonathan's new Visualizer object and its portability.
+    - The progress is visible in the `streamline-finding-transforms` branch and is tied to a specific GitHub issue. Hopefully the idea is clear about how
+    the page should operate--you enter any number of axis-angle transforms on top of a data quaternion and it shows the result of running them all in order.
+    - As long as this is applied to the model in the same way as on the main visualizer, it can be used to determine what things will look like.
+    - The current implementation is far from great. Here's what it needs:
+        - The 'remove' functionality seems to be broken, so I want to fix that.
+        - It needs documentation for how it will be used.
+        - The Visualizer and quaternion list should not be on the same level in the design. Instead, the visualizer shows the result of all quaternions on every
+        limb, while the list just shows the ones corresponding to the selected limb (based on a drop down menu).
+        - Verify the 'controlled' aspect of the QuaternionSelect component, and demonstrate confidence there by removing all redundant React state inside it. There's
+        no reason to store the value as a quaternion at top level AND as axis+angle inside the component.
+        - Add an ability to merge quaternions together so that the list won't get cluttered.
+        - Add support for using my file data more easily so that I don't have to manually enter quaternions, and so that I can see
+        animations and how they're affected.
+
+## 7/30/2021
+- I have not worked on fixing anything that seemed to be broken with the upload form, but I have worked with the new datasets since they are in the NEED category.
+- I've made a handler that can use a C library for sensor fusion, which is very neat and somewhat useful. I didn't trust the data from the micropython libarary, but now I do trust it because the new library gives us almost the same results.
+    - why does the treadmill data seem to have such a slow walk?
+- the biggest issue on my mind is how to streamline arranging the local quaternions.
+    - Jonathan has a similar issue heresince he has to decide what interface goes on the upload form.
+
+## 7/29/2021:
+- Appending multiple samples from the Daily+Sports dataset confirms the guess that the integration starts at (1,0,0,0) and converges toward a real answer after about 2.5 seconds worth of samples (at 25 Hz, so 75 samples?)
+    - Note that I'm telling the program that we're doing 100 Hz. what happens if I change it to 25hz to be accurate?
+        - Changing the sampling rate doesn't seem to do anything when it goes from 30 Hz to 25 Hz.
+
 ## 7/27/2021:
+- Now looking at the [Daily and Sports Activity Data Set](https://archive.ics.uci.edu/ml/datasets/daily+and+sports+activities)
+- The folder has the following structure: 
+    - choose the activity. Example: 'a10' is 'walking on a flat treatmill at 4km/h'
+    - choose the subject.
+    - choose the segment. Each segment is 5 seconds of data at 25hz sampling rate.
+- No time sampling, sampling rate is 25hz.
+- What are the sensors:
+    - torso, right arm, left arm, right leg, left leg
+        - position of sensor on limb is NOT clear. Let's just do upper limb for now.
+- Quoted from the description:
+```
+columns 1-9 correspond to the sensors in unit 1 (T),
+columns 10-18 correspond to the sensors in unit 2 (RA),
+columns 19-27 correspond to the sensors in unit 3 (LA),
+columns 28-36 correspond to the sensors in unit 4 (RL),
+columns 37-45 correspond to the sensors in unit 5 (LL).
+```
+- The format of the data is acc+gyro+magnet, which is awfully convenient.
+- Looking at the data, it seems to be on the order of 1-20 and has a decimal
+point, so I think it's in degrees and isn't multiplied by 1000.
+- command to generate quaternions from first 9 lines of data from the barshan dataset: it's getting to be a REALLY long command.
+```
+use-datatype-handler-multi.py data-samples/barshan-altun-dailysports/raw-data/activity10-subj1-sample21.txt acc_gyro_mag 0 9 1 data-samples/barshan-altun-dailysports/processed-data/activity10-subj1-sample21-quats.dat --sep comma
+```
+- graphing the resulting data sample using `graph-animate-transf.py --offset 0 data-samples/barshan-altun-dailysports/processed-data/activity10-subj1-sample21-quats.dat` (note that this is the TORSO): we get a rotation to face upward from facing forward, followed by staying relatively forward. I think this is because the first few samples are still stabilizing using magnet and accel data to figure out which way is down. We can probably get something more accurate by vertically appending many files.
+    - Now let's try with data from a leg sensor! Which is the 4th one, or lines 27 until 27+9.
+    - with the leg data, it has the same property but resolves to point downwards instead of upwards. I think this is a good thing since the sensors are likely oriented down when on the legs and up when on the torso, if it matches the gait dataset.
+## 7/26/2021:
 - What have I done in the past week?
     - I've made (and discussed with the team) a list about what we have left to do in the project. here it is from the slack:
 ```
