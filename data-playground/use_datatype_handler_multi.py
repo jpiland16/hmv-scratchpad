@@ -3,11 +3,13 @@ from datatype_handlers.EulerAngleHandler import EulerAngleHandler
 from datatype_handlers.DeltaQuatHandler import DeltaQuatHandler
 from datatype_handlers.AccGyroMagnetHandler import AGMHandler
 from datatype_handlers.AccGyroMagnetAltHandler import AGMAltHandler
+from datatype_handlers.QuaternionHandler import QuaternionHandler
 
 data_handlers = {
     'euler': EulerAngleHandler(),
     'delta_q': DeltaQuatHandler(),
-    'acc_gyro_mag': AGMHandler()
+    'acc_gyro_mag': AGMHandler(),
+    'quat': QuaternionHandler()
 }
 
 separators = {
@@ -19,7 +21,7 @@ separators = {
 def get_handler(data_type):
     return data_handlers[data_type]
 
-def process_data(target_file, datatype, start_column, stride_length, num_sensors, output_file, time_column=0, degrees=False, sep='space', div_factor=1):
+def process_data(target_file, datatype, start_column, stride_length, num_sensors, output_file, time_column=0, degrees=False, sep='space', div_factor=1, start_row=1):
     with open(target_file) as f:
         test_datalines = f.readlines()[1]
         print("num sensors: {0}".format(num_sensors))
@@ -34,7 +36,7 @@ def process_data(target_file, datatype, start_column, stride_length, num_sensors
 
     input_data = []
     with open(target_file) as f:
-        datalines = f.readlines()[1:] # Skip first line for now
+        datalines = f.readlines()[start_row:]
         for line in datalines:
             datapts = line.split(separators[sep]) # May want to add optional arg for separator
             line_data = []
@@ -79,7 +81,8 @@ if __name__=='__main__':
     parser.add_argument('--degrees', help='input is degrees instead of radians', action='store_true') # Currently not used. the handler assumes it's degrees...
     parser.add_argument('--sep', help='separator between data points on a line', default='space', choices=separators.keys())
     parser.add_argument('--div_factor', type=int, help='amount by which to divide file data values', default=1)
+    parser.add_argument('--start_row', type=int, help='index of the first row to read data from', default=1)
     cl_args = parser.parse_args()
-    process_data(cl_args.target_file, cl_args.datatype, cl_args.start_column, cl_args.stride_length, cl_args.num_sensors, cl_args.output_file, cl_args.time_column, cl_args.degrees, cl_args.sep, div_factor=cl_args.div_factor)
+    process_data(cl_args.target_file, cl_args.datatype, cl_args.start_column, cl_args.stride_length, cl_args.num_sensors, cl_args.output_file, cl_args.time_column, cl_args.degrees, cl_args.sep, div_factor=cl_args.div_factor, start_row=cl_args.start_row)
 
     

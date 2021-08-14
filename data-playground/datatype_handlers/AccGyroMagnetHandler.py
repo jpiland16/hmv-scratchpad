@@ -1,6 +1,6 @@
 import math
 from .DatatypeHandler import DatatypeHandler
-from micropython_fusion.fusion import Fusion
+from .micropython_fusion.fusion import Fusion
 
 DEGREES_PER_RADIAN = 360 / (2*math.pi)
 SAMPLE_RATE_HZ = 25.0
