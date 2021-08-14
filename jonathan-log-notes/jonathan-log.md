@@ -2,10 +2,43 @@
 tags: [hmv-scratchpad]
 title: jonathan-log
 created: '2021-05-24T17:36:41.689Z'
-modified: '2021-07-28T19:56:08.981Z'
+modified: '2021-08-12T16:26:32.664Z'
 ---
 
 Note: all quaternions in these notes will be given in XYZW format.
+
+## 8/10/2021
+
+ - The `MannequinVisualizer` object is more or less in its final state at this point. It needs some JSdoc for explanation.
+ - Worked on making a useful smartphone model in blender by adding text ("UP" and "DOWN"), converting it to a mesh,
+ and then parenting it to the phone GLB which I downloaded from [here](https://sketchfab.com/3d-models/prototype-of-unnamed-smartphone-796e4d17b0ac43dda78c3a3a89a9bb0f)
+ - Need to add CC attribution
+ - Combined the inertial signals from the smartphone dataset (body_gyro and total_accel) by splitting each line into 128 samples. Used this as input to AccGyroHandler. Viewed the training set on local machine.
+
+### Looking into OAuth2 for outbound Contact Us emails
+ - Today I noticed that the contact us emails weren't going through since Google had automatically turned our less secure app access back OFF.
+ - So I have been following through [this post](https://stackoverflow.com/a/43202668/) on StackOverflow.
+   1. Enabled Gmail API in the Cloud Console
+   2. Added OAuth consent screen ("external" was the only option available) with human.model.visualizer@gmail.com as the developer and only authorized test user
+   3. Copied the tutorial code [here](https://developers.google.com/gmail/api/quickstart/nodejs) into sendEmail.js but changed scopes to the 4 mentioned [here](https://stackoverflow.com/a/57087039/)
+   4. Created OAuth Desktop credentials called "HMV-Server-GMail" with no Redirect URIs
+   5. Downloaded these credentials as a JSON file
+   6. Ran `npm install googleapis@39 --save`
+   7. Ran `node server` and authenticated by pasting the link into the browser, then copying the authentication code
+
+### Questions
+ - Can we incorporate labels and/or additional data into the saved quaternion_data.dat files so that we can deprecate manually setting output types? i.e., can the user choose what to graph?
+ - Frequency in DatatypeHandler - I manually changed it to 20 (I think) - can I confirm this with someone?
+ - ~~Reset for each subject in smartphone dataset. Can we do this with the Fusion library?~~ Maybe better to split into separate files
+ - OK for me to mess around with better-docs JSdoc and/or React component JSdoc?
+ - OK for me to finish the overview page?
+ - OK for me to modify PlayBar and/or FileViewer to be more modular (make it easier to do split screen)?
+ - GTQ on upload form?
+ - Is there any way we can allow multiple data files to share the same `metadata.json` file?
+   - An idea: keep the timestamped folder names and still use display name. But instead of this display name showing up as a single data file, this is the name of a folder in the file browser. Then the file names correspond to real file names in that subfolder.
+
+### WIP
+ - Quaternion explanation video
 
 ## 7/27/2021
 
