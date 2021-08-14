@@ -1,3 +1,26 @@
+## 8/12/2021
+- After looking at S1-Drill in the Tinker tool using both of the acc+gyro+magnet libraries, it looks like Micropython-fusion is more accurate, and even
+that one looks pretty underwhelming compared to the quaternion data from the dataset itself. So I will probably give up on the C library (though it is
+very likely that I've somehow mishandled it and that's why I'm encountering problems).
+    - However, I still get a mess as the result when I try using the Barshan-Altun dataset--which means it is unlikely that it will be available within the week,
+    so it will likely never be available.
+        - It's also possible that OPPORTUNITY and daily+sports have different units, and I'm currently configured to deal with the ones from OPPORTUNITY.
+- I should definitely tidy up the sample-test-data folder and file structure in general in order to make it slightly usable by further maintainers.
+
+## 8/5/2021
+- On the streamlining branch, I've made everything a child of the HIP joint in the 
+Visualizer object. This has far reaching consequences that may or may not mess everything up (probably not since everything works normally if you don't touch the hip joint, right?).
+    - It's good though, since it lets me ensure that the navel is facing the same way as the legs
+    when the model is not facing forward.
+
+## 8/4/2021
+- I've made a tool on the `streamline-finding-transforms` branch that is fully functionality and not at all pretty. It allows me to quickly come up with
+tuning for the local transform quaternions. I'll try it on barshan-altun.
+- The barshan-altun dataset just didn't have enough movement for me when I last tried it, and I think I know why. The x-io Fusion package is taking the gyro
+input and assuming it's degrees per second, and the [associated paper](http://repository.bilkent.edu.tr/bitstream/handle/11693/28535/Human%20activity%20recognition%20using%20inertialmagnetic%20sensor%20units.pdf;jsessionid=D1D43A73443FAB7A51A6D94A2B82CD49?sequence=1) uses degrees per second when discussing the IMU, but they linked the [2009 Xsens manual](http://opportunity-project.eu/system/files/MTi_and_MTx_User_Manual_and_Technical_Documentation.pdf) which says the raw data output is in radians/sec. When I did the conversion from radians to degrees, the movement was a lot more obvious.
+    - Also, I find it funny that the Opportunity website's host of the Xsens MTx manual is the number one google search result for "MTi and MTx User Manual and Technical Documentation (2009)". Shouldn't Xsens serve this document?
+    - Now it's time to look at these quaternions on the model.
+
 ## 8/2/2021
 - I should probably be working more on documentation right now, but instead I've been working on a tool for easing the process of finding local transforms
 for new datasets, since I'm not happy with the current process and would like some instant feedback and sliders. This is also a great opportunity to get used
@@ -113,7 +136,7 @@ significantly better than nonsense, though they're still a little physically imp
 
 ## 7/15/2021:
 - Important python commands used:
-    - `append-files-horizontally.py <directory-containing-sensor-data-files> <output-filepath>.txt`: Created a file called `appended_output.txt` which contains the contents of all files in the target directory stiched together horizontally.
+    - `append-files-horizontally.py <directory-containing-sensor-data-files> <output-filepath>.txt`: Created a file with the desired name which contains the contents of all files in the target directory stiched together horizontally.
     - `python use-datatype-handler-multi.py appended_output.txt euler 21 30 6 gait-calib-subj1-all.dat`: Created a file called `gait-calib-subj1-all.dat` which contains the quaternion representation of the Euler angles from the input file. This can be directly interpreted by the model.
 - I stitched together the gait dataset's files and processed them using a new multi-sensor handler (similar to the one in server_side). Then I made a relevant metadata.json file and gave it to the server, and it did not crash the server. It looks pretty good, save for a couple of issues with global transforms.
     - Everything is facing backwards, which is fine except that we don't have control over every single bone. So either the root should face backwards, or the global transform should turn us 180 degrees about the y-axis.

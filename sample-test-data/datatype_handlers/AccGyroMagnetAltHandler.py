@@ -6,6 +6,7 @@ import numpy as np
 from .DatatypeHandler import DatatypeHandler
 
 RADIANS_PER_DEGREE = (np.pi * 2) / 360
+DEGREES_PER_RADIAN = 1 / RADIANS_PER_DEGREE
 
 def eulerToQuaternion(roll, pitch, yaw):
         cr = np.cos(roll * 0.5)
@@ -35,7 +36,11 @@ class AGMAltHandler(DatatypeHandler):
         data_ptr = create_float_array_array()
         for i in range(len(data)):
             data_ptr[i] = create_float_array()
-            for j in range(9):
+            for j in range(0, 3):
+                data_ptr[i][j] = data[i][j+start_column]
+            for j in range(3, 6):
+                data_ptr[i][j] = data[i][j+start_column] * DEGREES_PER_RADIAN
+            for j in range(6, 9):
                 data_ptr[i][j] = data[i][j+start_column]
 
         create_output_array = float_type * 3
@@ -45,6 +50,10 @@ class AGMAltHandler(DatatypeHandler):
         for i in range(len(data)):
             output_ptr[i] = create_output_array()
 
+        # Source of Fusion Library:
+        # https://github.com/xioTechnologies/Fusion
+        # Authors: x-io Technologies, Riccardo Miccini
+        # License: GNU general public license
         libname = os.path.dirname(__file__)+'/build/FuseDataArray.so'
         c_lib = ctypes.CDLL(libname)
         c_lib.eulerFromDoubles(data_ptr, ctypes.c_int(len(data)), output_ptr, ctypes.c_float(1.0/SAMPLE_RATE))

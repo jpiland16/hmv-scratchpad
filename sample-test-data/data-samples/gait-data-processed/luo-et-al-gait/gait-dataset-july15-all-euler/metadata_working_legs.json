@@ -1,0 +1,56 @@
+{
+    "name": "Gait dataset",
+    "displayName":"Gait dataset, calibration, euler, ALL sensors",
+    "globalTransformQuaternion": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "targets": [      
+      {
+        "bone": "LUL",
+        "type": "Quaternion",
+        "column": 0,
+        "localTransformQuaternion": {
+          "x": -0.5,
+          "y": -0.5,
+          "z": 0.5,
+          "w": 0.5
+        }
+      },
+      {
+        "bone": "RUL",
+        "type": "Quaternion",
+        "column": 4,
+        "localTransformQuaternion": {
+          "x": -0.5,
+          "y": -0.5,
+          "z": 0.5,
+          "w": 0.5
+        }
+      },
+      {
+        "bone": "RLA",
+        "type": "Quaternion",
+        "column": 8,
+        "localTransformQuaternion": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        }
+      },
+      {
+        "bone": "BACK",
+        "type": "Quaternion",
+        "column": 20,
+        "localTransformQuaternion": {
+          "x": 1,
+          "y": 0,
+          "z": 0,
+          "w": 0
+        }
+      }
+    ]
+}

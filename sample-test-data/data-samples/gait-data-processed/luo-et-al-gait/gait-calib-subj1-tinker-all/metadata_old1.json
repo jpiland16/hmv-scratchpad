@@ -1,0 +1,89 @@
+{
+	"name": "Opportunity dataset",
+	"displayName": "Tinker dataset 2021-08-09T19:22:35.064Z",
+	"globalTransformQuaternion": {
+		"w": 1,
+		"x": 0,
+		"y": 0,
+		"z": 0
+	},
+	"targets": [
+		{
+			"bone": "HIPS",
+			"type": "Quaternion",
+			"column": 20,
+			"localTransformQuaternion": {
+				"w": -0.01885384020476573,
+				"x": 0.6783329124756505,
+				"y": 0.7105175307153336,
+				"z": -0.18620910586762277
+			}
+		},
+		{
+			"bone": "BACK",
+			"type": "Quaternion",
+			"column": 20,
+			"localTransformQuaternion": {
+				"w": 0.47101503933616246,
+				"x": -0.48168042488707963,
+				"y": -0.3889135990114933,
+				"z": 0.628390812714256
+			}
+		},
+		{
+			"bone": "RUA",
+			"type": "Quaternion",
+			"column": 8,
+			"localTransformQuaternion": {
+				"w": -0.7407617999696279,
+				"x": 0.671767784063628,
+				"y": 0,
+				"z": 0
+			}
+		},
+		{
+			"bone": "RUL",
+			"type": "Quaternion",
+			"column": 4,
+			"localTransformQuaternion": {
+				"w": 0.5317561266271347,
+				"x": -0.543796897379452,
+				"y": -0.3471797992060823,
+				"z": 0.5486224049546398
+			}
+		},
+		{
+			"bone": "RLL",
+			"type": "Quaternion",
+			"column": 12,
+			"localTransformQuaternion": {
+				"w": -0.598510315663938,
+				"x": 0.49445247860821784,
+				"y": 0.5121007652949893,
+				"z": -0.3674982375826169
+			}
+		},
+		{
+			"bone": "LUL",
+			"type": "Quaternion",
+			"column": 0,
+			"localTransformQuaternion": {
+				"w": 0.4896925925685191,
+				"x": -0.6870877481248202,
+				"y": -0.31152861137731874,
+				"z": 0.43710584010466547
+			}
+		},
+		{
+			"bone": "LLL",
+			"type": "Quaternion",
+			"column": 0,
+			"localTransformQuaternion": {
+				"w": 0.4618436742727403,
+				"x": -0.6690227463689974,
+				"y": -0.33082606912120593,
+				"z": 0.4792317783337726
+			}
+		}
+	]
+}
