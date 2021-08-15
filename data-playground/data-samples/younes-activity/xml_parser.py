@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import argparse
 
 
-def parse_xml_data(input_file, output_file):
+def parse_xml_data(input_file, output_file, verbose=False):
     tree = ET.parse(input_file)
     root = tree.getroot()
 
@@ -25,7 +25,7 @@ def parse_xml_data(input_file, output_file):
             curr_quat = [float(quaternion[i].attrib['value']) for i in range(1,5)]
             quats[quaternion.attrib['name']].append(curr_quat)
 
-    print(quats)
+    if verbose: print(quats)
 
     with open(output_file, 'w') as f:
         f.write("# ")
