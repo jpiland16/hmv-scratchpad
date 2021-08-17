@@ -2,10 +2,15 @@
 tags: [hmv-scratchpad]
 title: jonathan-log
 created: '2021-05-24T17:36:41.689Z'
-modified: '2021-08-12T16:26:32.664Z'
+modified: '2021-08-17T04:57:31.792Z'
 ---
 
 Note: all quaternions in these notes will be given in XYZW format.
+
+## 8/17/2021
+
+ - To complete the Smartphone Dataset, I first ran [`combine_data.py`](combine_data.py) in the root folder of the UCI HAR Repository (the folder containing the README). 
+ - I then copied the two new files generated to the `python_programs` folder on my local copy of the server and ran [`convert_to_quaternions.py`](convert_to_quaternions.py) in this folder. I then copied the two folders generated to the files directory on the server.
 
 ## 8/10/2021
 
