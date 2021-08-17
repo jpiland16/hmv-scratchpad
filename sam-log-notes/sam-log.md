@@ -1,3 +1,15 @@
+## 8/16/2021
+- I have configured a few of the Physical Activities dataset files, but they all seem to have major differences in quaternions, both between subjects
+and between activities (but not really between trials!).
+    - I have uploaded all the files to the server and categorized them as either 'configured' or 'unconfigured'. That way they are all acessible but
+    it is easy to tell which ones are supposed to look sane.
+    - I should probably do the same with the remainder of the appended Luo et al files. I just need to write a similar script to the one for Physical Activities.
+
+## 8/15/2021
+- To fix the problem I encountered during the video recording with global data quaternions, I tried adding a quick and dirty global quaternion editor to the tinkerer page. It seems to correctly apply before the data quaternions.
+    - HOWEVER, right now when I download a JSON file and use it in the server, it does not show the same results. So I am able to make the correct OPPORTUNITY metadata file in the tinkerer, but the tinkerer tells me that I'm wrong.
+    - But one big lesson: Global transformation matters, and we wouldn't even be able to work with the opportunity dataset if we didn't have them.
+
 ## 8/12/2021
 - After looking at S1-Drill in the Tinker tool using both of the acc+gyro+magnet libraries, it looks like Micropython-fusion is more accurate, and even
 that one looks pretty underwhelming compared to the quaternion data from the dataset itself. So I will probably give up on the C library (though it is
